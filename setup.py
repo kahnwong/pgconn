@@ -6,6 +6,8 @@ if __name__ == "__main__":
         name="pgconn",
         version="0.1",
         description="pgcli wrapper to connect to PostgreSQL database specified in `db.yaml`. Proxy/tunnel connections are automatically created and killed when pgcli is exited.",
+        long_description=open("README.md").read(),
+        long_description_content_type="text/markdown",
         url="https://github.com/kahnwong/pgconn",
         author="Karn Wong",
         author_email="karn@karnwong.me",
