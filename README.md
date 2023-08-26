@@ -1,6 +1,6 @@
 # pgconn
 
-`pgcli` wrapper to connect to PostgreSQL database specified in `db.yaml`. Proxy/tunnel connections are automatically created and killed when pgcli is exited.
+`pgcli` wrapper to connect to PostgreSQL database specified in `db.yaml`. Proxy/tunnel connection is automatically created and killed when pgcli is exited.
 
 ## Pre-requisites
 
