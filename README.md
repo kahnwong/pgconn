@@ -9,7 +9,6 @@
 
 1. `pipx install -e .`
 2. create a config file in `~/.config/pgconn/db.yaml`
-3. `pgconn --install-completion`
 
 ```yaml
 - name: sammple-db
@@ -27,6 +26,8 @@ proxy:
   kind: ssh
   host: $SSH_CONFIG_HOST
 ```
+
+3. `pgconn --install-completion`
 
 ## Available commands
 
