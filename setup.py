@@ -3,7 +3,7 @@ from setuptools import setup
 
 if __name__ == "__main__":
     setup(
-        name="pg_conn_cli",
+        name="pgconn",
         version="0.1",
         packages=find_packages(exclude=["tests"]),
         install_requires=[
@@ -12,7 +12,7 @@ if __name__ == "__main__":
         ],
         entry_points={
             "console_scripts": [
-                "pg-conn-cli=pg_conn_cli.app:entrypoint",
+                "pgconn=pgconn.app:entrypoint",
             ],
         },
     )

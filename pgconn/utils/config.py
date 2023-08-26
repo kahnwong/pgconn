@@ -2,20 +2,18 @@ import os
 
 import yaml
 
-home_directory = os.path.expanduser("~")
-
-
-# read config
-file_path = f"{home_directory}/.config/pg-conn-cli/db.yaml"
-if os.path.exists(file_path):
-    with open(file_path, "r") as yaml_file:
-        yaml_data = yaml.safe_load(yaml_file)
-elif not os.path.exists(file_path):
-    print(f"Config file at {file_path} does not exist")
-    raise FileNotFoundError
-
 
 def _read_db_config():
+    # read config
+    home_directory = os.path.expanduser("~")
+    file_path = f"{home_directory}/.config/pgconn/db.yaml"
+    if os.path.exists(file_path):
+        with open(file_path, "r") as yaml_file:
+            yaml_data = yaml.safe_load(yaml_file)
+    elif not os.path.exists(file_path):
+        print(f"Config file at {file_path} does not exist")
+        raise FileNotFoundError
+
     # convert database list to dict
     db_config = {item["name"]: item for item in yaml_data}
 

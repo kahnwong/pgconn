@@ -1,6 +1,6 @@
 import subprocess
 
-from pg_conn_cli.utils.prereq import is_binary_in_path
+from pgconn.utils.prereq import is_binary_in_path
 
 
 def start_proxy(kind: str, host: str, db_hostname: str = False):

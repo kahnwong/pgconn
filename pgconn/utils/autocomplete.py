@@ -1,6 +1,6 @@
 import typer
 
-from pg_conn_cli.utils.config import db_role_mapping
+from pgconn.utils.config import db_role_mapping
 
 
 def complete_db():  # noqa

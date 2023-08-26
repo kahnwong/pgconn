@@ -4,13 +4,13 @@ import typer
 from rich import print
 from typing_extensions import Annotated
 
-from pg_conn_cli.utils.autocomplete import complete_db
-from pg_conn_cli.utils.autocomplete import complete_role
-from pg_conn_cli.utils.config import db_config
-from pg_conn_cli.utils.config import db_role_mapping
-from pg_conn_cli.utils.prereq import is_binary_in_path
-from pg_conn_cli.utils.run import connect_db
-from pg_conn_cli.utils.run import start_proxy
+from pgconn.utils.autocomplete import complete_db
+from pgconn.utils.autocomplete import complete_role
+from pgconn.utils.config import db_config
+from pgconn.utils.config import db_role_mapping
+from pgconn.utils.prereq import is_binary_in_path
+from pgconn.utils.run import connect_db
+from pgconn.utils.run import start_proxy
 
 
 # --------------- init app --------------- #

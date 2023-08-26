@@ -1,4 +1,4 @@
-# pg-conn-cli
+# pgconn
 
 ## Pre-requisites
 
@@ -7,12 +7,9 @@
 
 ## Setup
 
-```bash
-pipx install -e .
-pg-conn-cli --install-completion
-```
-
-Then create a config file in `~/.config/pg-conn-cli/db.yaml`
+1. `pipx install -e .`
+2. create a config file in `~/.config/pgconn/db.yaml`
+3. `pgconn --install-completion`
 
 ```yaml
 - name: sammple-db
@@ -45,7 +42,7 @@ list
 `list database`
 
 ```bash
-❯ pg-conn-cli list database
+❯ pgconn list database
 Database list:
 - nuc-map
 - local-postgres
@@ -54,7 +51,7 @@ Database list:
 `list role`
 
 ```bash
-❯ pg-conn-cli list role nuc-map
+❯ pgconn list role nuc-map
 Dbname: nuc-map
 Roles:
 - postgres
@@ -64,7 +61,7 @@ Roles:
 `connect`
 
 ```bash
-❯ pg-conn-cli connect nuc-map postgres
+❯ pgconn connect nuc-map postgres
 Server: PostgreSQL 15.3
 Version: 3.5.0
 Home: http://pgcli.com
