@@ -2,12 +2,61 @@ import os
 
 import yaml
 
+home_directory = os.path.expanduser("~")
+file_path = f"{home_directory}/.config/pgconn/db1.yaml"
+
+
+def _init_db_config():
+    if not os.path.exists(file_path):
+        with open(file_path, "w") as f:
+            yaml.dump(
+                [
+                    {
+                        "name": "db1",
+                        "hostname": "host1",
+                        "roles": [
+                            {
+                                "username": "postgres",
+                                "password": "postgrespassword",
+                                "dbname": "postgres",
+                            }
+                        ],
+                    },
+                    {
+                        "name": "db2",
+                        "hostname": "host2",
+                        "proxy": {"kind": "ssh", "host": "tunnel.example.com"},
+                        "roles": [
+                            {
+                                "username": "postgres",
+                                "password": "postgrespassword",
+                                "dbname": "postgres",
+                            }
+                        ],
+                    },
+                    {
+                        "name": "db-gcp",
+                        "hostname": "host3",
+                        "proxy": {
+                            "kind": "cloud-sql-proxy",
+                            "host": "foo-2132:asia-southeast1:db-bar",
+                        },
+                        "roles": [
+                            {
+                                "username": "postgres",
+                                "password": "postgrespassword",
+                                "dbname": "postgres",
+                            }
+                        ],
+                    },
+                ],
+                f,
+            )
+
 
 def _read_db_config():
     # read config
-    home_directory = os.path.expanduser("~")
-    file_path = f"{home_directory}/.config/pgconn/db.yaml"
-    if os.path.exists(file_path):
+    if os.path.exists(file_path):  # just in case
         with open(file_path, "r") as yaml_file:
             yaml_data = yaml.safe_load(yaml_file)
     elif not os.path.exists(file_path):
@@ -34,6 +83,7 @@ def _get_database_roles(database: str, db_config):
         return []
 
 
+_init_db_config()
 db_config = _read_db_config()
 
 databases = db_config.keys()
