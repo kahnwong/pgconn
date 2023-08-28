@@ -3,7 +3,7 @@ import os
 import yaml
 
 home_directory = os.path.expanduser("~")
-file_path = f"{home_directory}/.config/pgconn/db1.yaml"
+file_path = f"{home_directory}/.config/pgconn/db.yaml"
 
 
 def _init_db_config():
