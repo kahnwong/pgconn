@@ -43,6 +43,8 @@ def connect_db(
 ):
     pgcli_command = "pgcli"
 
+    if ssh_tunnel:
+        hostname = "localhost"
     connection_uri = (
         f"postgresql://{username}:{password}@{hostname}:{port}/{dbname}?sslmode=disable"
     )
@@ -51,9 +53,6 @@ def connect_db(
         pgcli_command,
         connection_uri,
     ]
-
-    if ssh_tunnel:
-        command.extend(["--ssh-tunnel", ssh_tunnel])
 
     try:
         subprocess.run(command, check=True)

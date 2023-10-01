@@ -72,13 +72,24 @@ def connect(
             proxy_proc.kill()
             proxy_proc.wait()
         elif proxy["kind"] == "ssh":
+            proxy_proc = start_proxy(
+                kind=proxy["kind"],
+                host=proxy["host"],
+                db_hostname=db_config[database]["hostname"],
+            )
+
+            sleep(0.50)  # important, so proxy has some time to start up
+
             connect_db(
                 hostname=hostname,
                 dbname=dbname,
                 username=username,
                 password=password,
-                ssh_tunnel=proxy["host"],
+                ssh_tunnel=True,
             )
+
+            proxy_proc.kill()
+            proxy_proc.wait()
     elif not proxy:
         connect_db(
             hostname=hostname,
