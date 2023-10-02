@@ -14,7 +14,7 @@
 3. create a config file in `~/.config/pgconn/db.yaml`
 
 ```yaml
-- name: sammple-db
+- name: sample-db
   hostname: localhost
   proxy: # this block is optional
     kind: cloud-sql-proxy
@@ -35,29 +35,28 @@ proxy:
 ```bash
 connect DATABASE ROLE
 list
-    database
-    role DATABASE
+    databases
+    roles DATABASE
 ```
 
 ## Examples
 
-`list database`
+`list databases`
 
 ```bash
-❯ pgconn list database
-Database list:
-- nuc-map
-- local-postgres
+❯ pgconn list databases
+Available databases:
+    nuc-postgres
+    local-postgres
 ```
 
-`list role`
+`list roles`
 
 ```bash
-❯ pgconn list role nuc-map
-Dbname: nuc-map
+❯ pgconn list roles nuc-map
+Database: nuc-postgres
 Roles:
-- postgres
-- postgres2
+    postgres
 ```
 
 `connect`
