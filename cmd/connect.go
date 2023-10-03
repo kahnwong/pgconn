@@ -54,13 +54,7 @@ var connectCmd = &cobra.Command{
 
 		// clean up proxy PID
 		if dbConfig.ProxyKind != "" {
-			pgid, err := syscall.Getpgid(proxyCmd.Process.Pid)
-			if err == nil {
-				err = syscall.Kill(-pgid, syscall.SIGKILL)
-				if err != nil {
-					log.Fatal(err)
-				}
-			}
+			cleanup(proxyCmd)
 		}
 	},
 }
@@ -79,6 +73,7 @@ func (c *ConnectCommand) Synopsis() string {
 	return "Connect to a database"
 }
 
+// config
 type Connection struct {
 	Hostname  string
 	Username  string
@@ -110,6 +105,7 @@ func getConnectionInfo(name string, role string) Connection {
 	return dbConfig
 }
 
+// interface
 type Connect interface {
 	CreateProxy() *exec.Cmd
 	ConnectDB() *exec.Cmd
@@ -161,4 +157,15 @@ func (c Connection) ConnectDB() *exec.Cmd {
 	}
 
 	return cmd
+}
+
+// cleanup
+func cleanup(cmd *exec.Cmd) {
+	pgid, err := syscall.Getpgid(cmd.Process.Pid)
+	if err == nil {
+		err = syscall.Kill(-pgid, syscall.SIGKILL)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
 }
