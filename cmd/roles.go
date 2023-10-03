@@ -29,13 +29,11 @@ var rolesCmd = &cobra.Command{
 		if isValidDatabase {
 			fmt.Printf("Database: %s\n", args[0])
 			fmt.Println("Roles:")
-			for _, v := range config {
-				if v.Name == args[0] {
-					for _, v := range v.Roles {
-						fmt.Printf("    %s\n", v.Username)
-					}
-				}
+
+			for _, v := range getRoles(args[0]) {
+				fmt.Printf("    %s\n", v)
 			}
+
 		} else {
 			fmt.Println("Please specify an available database")
 			os.Exit(1)
