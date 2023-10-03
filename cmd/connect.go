@@ -40,14 +40,17 @@ var connectCmd = &cobra.Command{
 		// get db config
 		dbConfig := getConnectionInfo(args[0], args[1])
 
+		// init
+		c := Connect(dbConfig)
+
 		// start proxy process if necessary
 		var proxyCmd *exec.Cmd
 		if dbConfig.ProxyKind != "" {
-			proxyCmd = createProxy(dbConfig)
+			proxyCmd = c.CreateProxy()
 		}
 
 		// connect via pgcli
-		connectDB(dbConfig)
+		c.ConnectDB()
 
 		// clean up proxy PID
 		if dbConfig.ProxyKind != "" {
@@ -107,7 +110,12 @@ func getConnectionInfo(name string, role string) Connection {
 	return dbConfig
 }
 
-func createProxy(c Connection) *exec.Cmd {
+type Connect interface {
+	CreateProxy() *exec.Cmd
+	ConnectDB() *exec.Cmd
+}
+
+func (c Connection) CreateProxy() *exec.Cmd {
 	var proxyCmd string
 	if c.ProxyKind == "ssh" {
 		proxyCmd = fmt.Sprintf("ssh -N -L 5432:%s:5432 %s", c.Hostname, c.ProxyHost)
@@ -127,7 +135,7 @@ func createProxy(c Connection) *exec.Cmd {
 	return cmd
 }
 
-func connectDB(c Connection) *exec.Cmd {
+func (c Connection) ConnectDB() *exec.Cmd {
 	// set hostname
 	var connectHostname string
 	if c.ProxyKind != "" {
