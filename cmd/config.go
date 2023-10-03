@@ -9,6 +9,9 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+// init
+var config = readConfig()
+
 // readConfig
 type Config struct {
 	Name     string `yaml:"name"`
@@ -44,4 +47,26 @@ func readConfig() []Config {
 	}
 
 	return configs
+}
+
+func getDatabases() []string {
+	databases := make([]string, 0)
+	for _, v := range config {
+		databases = append(databases, v.Name)
+	}
+
+	return databases
+}
+
+func getRoles(database string) []string {
+	roles := make([]string, 0)
+	for _, v := range config {
+		if v.Name == database {
+			for _, v := range v.Roles {
+				roles = append(roles, v.Username)
+			}
+		}
+	}
+
+	return roles
 }

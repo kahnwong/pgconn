@@ -11,10 +11,23 @@ import (
 	"github.com/spf13/cobra"
 )
 
+func connectionInfoGet(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+	var autocompleteOptions []string
+
+	if len(args) == 0 { // database
+		autocompleteOptions = getDatabases()
+	} else if len(args) == 1 { // roles
+		autocompleteOptions = getRoles(args[0])
+	}
+
+	return autocompleteOptions, cobra.ShellCompDirectiveNoFileComp
+}
+
 var connectCmd = &cobra.Command{
-	Use:   "connect [database] [role]",
-	Short: "Connect to a database with specified role",
-	Long:  `Connect to a database with specified role`,
+	Use:               "connect [database] [role]",
+	Short:             "Connect to a database with specified role",
+	Long:              `Connect to a database with specified role`,
+	ValidArgsFunction: connectionInfoGet,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
 			fmt.Println("Please specify a database and role")
