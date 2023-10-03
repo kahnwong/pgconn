@@ -14,7 +14,7 @@ import (
 func connectionInfoGet(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 	var autocompleteOptions []string
 
-	if len(args) == 0 { // database
+	if len(args) == 0 { // databases
 		autocompleteOptions = getDatabases()
 	} else if len(args) == 1 { // roles
 		autocompleteOptions = getRoles(args[0])
