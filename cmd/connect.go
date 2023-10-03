@@ -43,21 +43,11 @@ var connectCmd = &cobra.Command{
 		// start proxy process if necessary
 		var proxyCmd *exec.Cmd
 		if dbConfig.ProxyKind != "" {
-			proxyCmd = createProxy(dbConfig.Hostname, dbConfig.ProxyKind, dbConfig.ProxyHost)
+			proxyCmd = createProxy(dbConfig)
 		}
 
 		// connect via pgcli
-		var connectHostname string
-		if dbConfig.ProxyKind != "" {
-			if dbConfig.ProxyKind == "ssh" {
-				connectHostname = "localhost"
-			} else if dbConfig.ProxyKind == "cloud-sql-proxy" {
-				connectHostname = "127.0.0.1"
-			}
-		} else {
-			connectHostname = dbConfig.Hostname
-		}
-		dbCmd := connectDb(connectHostname, dbConfig.Username, dbConfig.Password, dbConfig.Dbname)
+		dbCmd := connectDb(dbConfig)
 
 		time.Sleep(1 * time.Second) // important, so proxy has some time to start up
 
@@ -124,12 +114,12 @@ func getConnectionInfo(name string, role string) Connection {
 	return dbConfig
 }
 
-func createProxy(hostname string, proxyKind string, proxyHost string) *exec.Cmd {
+func createProxy(c Connection) *exec.Cmd {
 	var proxyCmd string
-	if proxyKind == "ssh" {
-		proxyCmd = fmt.Sprintf("ssh -N -L 5432:%s:5432 %s", hostname, proxyHost)
-	} else if proxyKind == "cloud-sql-proxy" {
-		proxyCmd = fmt.Sprintf("cloud-sql-proxy %s --quiet", proxyHost)
+	if c.ProxyKind == "ssh" {
+		proxyCmd = fmt.Sprintf("ssh -N -L 5432:%s:5432 %s", c.Hostname, c.ProxyHost)
+	} else if c.ProxyKind == "cloud-sql-proxy" {
+		proxyCmd = fmt.Sprintf("cloud-sql-proxy %s --quiet", c.ProxyHost)
 	}
 
 	cmd := exec.Command("/bin/sh", "-c", proxyCmd)
@@ -142,8 +132,21 @@ func createProxy(hostname string, proxyKind string, proxyHost string) *exec.Cmd 
 	return cmd
 }
 
-func connectDb(hostname string, username string, password string, dbname string) *exec.Cmd {
-	connectionString := fmt.Sprintf("postgresql://%s:%s@%s:5432/%s?sslmode=disable", username, password, hostname, dbname)
+func connectDb(c Connection) *exec.Cmd {
+	// set hostname
+	var connectHostname string
+	if c.ProxyKind != "" {
+		if c.ProxyKind == "ssh" {
+			connectHostname = "localhost"
+		} else if c.ProxyKind == "cloud-sql-proxy" {
+			connectHostname = "127.0.0.1"
+		}
+	} else {
+		connectHostname = c.Hostname
+	}
+
+	// connect
+	connectionString := fmt.Sprintf("postgresql://%s:%s@%s:5432/%s?sslmode=disable", c.Username, c.Password, connectHostname, c.Dbname)
 	cmd := exec.Command("/bin/sh", "-c", fmt.Sprintf("pgcli \"%s\"", connectionString))
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
