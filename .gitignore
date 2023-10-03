@@ -1,4 +1,1 @@
-# python
-*.egg-info
-__pycache__
-.python-version
+pgconn

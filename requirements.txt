@@ -1,2 +1,0 @@
-pyyaml
-typer[all]>=0.9.0
