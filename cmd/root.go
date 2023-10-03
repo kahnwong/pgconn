@@ -20,9 +20,6 @@ func Execute() {
 	}
 }
 
-// init
-var config = readConfig()
-
 func init() {
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
