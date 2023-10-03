@@ -6,6 +6,7 @@ import (
 
 	"golang.org/x/exp/slices"
 
+	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 )
 
@@ -27,11 +28,13 @@ var rolesCmd = &cobra.Command{
 		isValidDatabase := slices.Contains(getDatabases(), args[0]) // true
 
 		if isValidDatabase {
-			fmt.Printf("Database: %s\n", args[0])
-			fmt.Println("Roles:")
+			green := color.New(color.FgGreen).SprintFunc()
+
+			fmt.Printf("%s %s\n", green("Database:"), args[0])
+			color.Blue("Roles:")
 
 			for _, v := range getRoles(args[0]) {
-				fmt.Printf("    %s\n", v)
+				fmt.Printf("  - %s\n", v)
 			}
 
 		} else {
