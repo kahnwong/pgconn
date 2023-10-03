@@ -12,10 +12,15 @@ import (
 )
 
 func connectionInfoGet(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
-	if len(args) == 1 {
-		return []string{"foo", "bar"}, cobra.ShellCompDirectiveNoFileComp
+	var autocompleteOptions []string
+
+	if len(args) == 0 { // database
+		autocompleteOptions = getDatabases()
+	} else if len(args) == 1 { // roles
+		autocompleteOptions = getRoles(args[0])
 	}
-	return []string{"Ernest", "Rick", "Mary"}, cobra.ShellCompDirectiveNoFileComp
+
+	return autocompleteOptions, cobra.ShellCompDirectiveNoFileComp
 }
 
 var connectCmd = &cobra.Command{
