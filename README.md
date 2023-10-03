@@ -9,9 +9,13 @@
 
 ## Setup
 
-1. `pipx install git+https://github.com/kahnwong/pgconn.git`
-2. `pgconn --install-completion`
-3. create a config file in `~/.config/pgconn/db.yaml`
+1. Install
+
+```bash
+go install github.com/kahnwong/pgconn@latest
+```
+
+2. create a config file in `~/.config/pgconn/db.yaml`
 
 ```yaml
 - name: sample-db
