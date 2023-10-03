@@ -47,14 +47,7 @@ var connectCmd = &cobra.Command{
 		}
 
 		// connect via pgcli
-		dbCmd := connectDb(dbConfig)
-
-		time.Sleep(1 * time.Second) // important, so proxy has some time to start up
-
-		if err := dbCmd.Run(); err != nil {
-			fmt.Printf("Failed to start the second process: %v\n", err)
-			os.Exit(1)
-		}
+		connectDB(dbConfig)
 
 		// clean up proxy PID
 		if dbConfig.ProxyKind != "" {
@@ -129,10 +122,12 @@ func createProxy(c Connection) *exec.Cmd {
 		os.Exit(1)
 	}
 
+	time.Sleep(1 * time.Second) // important, so proxy has some time to start up
+
 	return cmd
 }
 
-func connectDb(c Connection) *exec.Cmd {
+func connectDB(c Connection) *exec.Cmd {
 	// set hostname
 	var connectHostname string
 	if c.ProxyKind != "" {
@@ -151,6 +146,11 @@ func connectDb(c Connection) *exec.Cmd {
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
+
+	if err := cmd.Run(); err != nil {
+		fmt.Printf("Failed to start the second process: %v\n", err)
+		os.Exit(1)
+	}
 
 	return cmd
 }
