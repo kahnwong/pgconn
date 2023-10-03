@@ -1,4 +1,4 @@
-package main
+package cmd
 
 import (
 	"fmt"
@@ -7,7 +7,68 @@ import (
 	"os/exec"
 	"syscall"
 	"time"
+
+	"github.com/spf13/cobra"
 )
+
+var connectCmd = &cobra.Command{
+	Use:   "connect [database] [role]",
+	Short: "Connect to a database with specified role",
+	Long:  `Connect to a database with specified role`,
+	Run: func(cmd *cobra.Command, args []string) {
+		if len(args) == 0 {
+			fmt.Println("Please specify a database and role")
+			os.Exit(1)
+		} else if len(args) == 1 {
+			fmt.Println("Please specify a role")
+			os.Exit(1)
+		}
+
+		// get db config
+		dbConfig := getConnectionInfo(args[0], args[1])
+
+		// start proxy process if necessary
+		var proxyCmd *exec.Cmd
+		if dbConfig.ProxyKind != "" {
+			proxyCmd = createProxy(dbConfig.Hostname, dbConfig.ProxyKind, dbConfig.ProxyHost)
+		}
+
+		// connect via pgcli
+		var connectHostname string
+		if dbConfig.ProxyKind != "" {
+			if dbConfig.ProxyKind == "ssh" {
+				connectHostname = "localhost"
+			} else if dbConfig.ProxyKind == "cloud-sql-proxy" {
+				connectHostname = "127.0.0.1"
+			}
+		} else {
+			connectHostname = dbConfig.Hostname
+		}
+		dbCmd := connectDb(connectHostname, dbConfig.Username, dbConfig.Password, dbConfig.Dbname)
+
+		time.Sleep(1 * time.Second) // important, so proxy has some time to start up
+
+		if err := dbCmd.Run(); err != nil {
+			fmt.Printf("Failed to start the second process: %v\n", err)
+			os.Exit(1)
+		}
+
+		// clean up proxy PID
+		if dbConfig.ProxyKind != "" {
+			pgid, err := syscall.Getpgid(proxyCmd.Process.Pid)
+			if err == nil {
+				err = syscall.Kill(-pgid, syscall.SIGKILL)
+				if err != nil {
+					log.Fatal(err)
+				}
+			}
+		}
+	},
+}
+
+func init() {
+	rootCmd.AddCommand(connectCmd)
+}
 
 type ConnectCommand struct{}
 
@@ -26,58 +87,6 @@ type Connection struct {
 	Dbname    string
 	ProxyKind string
 	ProxyHost string
-}
-
-func (c *ConnectCommand) Run(args []string) int {
-	if len(args) == 0 {
-		fmt.Println("Please specify a database and role")
-		os.Exit(1)
-	} else if len(args) == 1 {
-		fmt.Println("Please specify a role")
-		os.Exit(1)
-	}
-
-	// get db config
-	dbConfig := getConnectionInfo(args[0], args[1])
-
-	// start proxy process if necessary
-	var proxyCmd *exec.Cmd
-	if dbConfig.ProxyKind != "" {
-		proxyCmd = createProxy(dbConfig.Hostname, dbConfig.ProxyKind, dbConfig.ProxyHost)
-	}
-
-	// connect via pgcli
-	var connectHostname string
-	if dbConfig.ProxyKind != "" {
-		if dbConfig.ProxyKind == "ssh" {
-			connectHostname = "localhost"
-		} else if dbConfig.ProxyKind == "cloud-sql-proxy" {
-			connectHostname = "127.0.0.1"
-		}
-	} else {
-		connectHostname = dbConfig.Hostname
-	}
-	dbCmd := connectDb(connectHostname, dbConfig.Username, dbConfig.Password, dbConfig.Dbname)
-
-	time.Sleep(1 * time.Second) // important, so proxy has some time to start up
-
-	if err := dbCmd.Run(); err != nil {
-		fmt.Printf("Failed to start the second process: %v\n", err)
-		os.Exit(1)
-	}
-
-	// clean up proxy PID
-	if dbConfig.ProxyKind != "" {
-		pgid, err := syscall.Getpgid(proxyCmd.Process.Pid)
-		if err == nil {
-			err = syscall.Kill(-pgid, syscall.SIGKILL)
-			if err != nil {
-				log.Fatal(err)
-			}
-		}
-	}
-
-	return 0
 }
 
 func getConnectionInfo(name string, role string) Connection {
