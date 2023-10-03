@@ -34,6 +34,14 @@ func readConfig() []Config {
 	}
 	filename := filepath.Join(homeDir, ".config", "pgconn", "db.yaml")
 
+	// Check if the file exists
+	_, err = os.Stat(filename)
+
+	if os.IsNotExist(err) {
+		fmt.Printf("File %s does not exist.\n", filename)
+		os.Exit(1)
+	}
+
 	var configs []Config
 
 	source, err := os.ReadFile(filename)

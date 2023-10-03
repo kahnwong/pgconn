@@ -116,6 +116,14 @@ func (c Connection) CreateProxy() *exec.Cmd {
 	if c.ProxyKind == "ssh" {
 		proxyCmd = fmt.Sprintf("ssh -N -L 5432:%s:5432 %s", c.Hostname, c.ProxyHost)
 	} else if c.ProxyKind == "cloud-sql-proxy" {
+		// check if cloud-sql-proxy exists
+		binaryName := "cloud-sql-proxy"
+		_, err := exec.LookPath(binaryName)
+		if err != nil {
+			fmt.Printf("Binary '%s' not found in the PATH\n", binaryName)
+			os.Exit(1)
+		}
+
 		proxyCmd = fmt.Sprintf("cloud-sql-proxy %s --quiet", c.ProxyHost)
 	}
 
@@ -132,6 +140,14 @@ func (c Connection) CreateProxy() *exec.Cmd {
 }
 
 func (c Connection) ConnectDB() *exec.Cmd {
+	// check if pgcli exists
+	binaryName := "pgcli"
+	_, err := exec.LookPath(binaryName)
+	if err != nil {
+		fmt.Printf("Binary '%s' not found in the PATH\n", binaryName)
+		os.Exit(1)
+	}
+
 	// set hostname
 	var connectHostname string
 	if c.ProxyKind != "" {
