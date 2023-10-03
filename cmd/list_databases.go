@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 )
 
@@ -11,9 +12,9 @@ var databasesCmd = &cobra.Command{
 	Short: "Get a list of databases",
 	Long:  `Get a list of databases`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Available databases:")
+		color.Green("Available databases:")
 		for _, v := range getDatabases() {
-			fmt.Printf("    %s\n", v)
+			fmt.Printf("  - %s\n", v)
 		}
 	},
 }
