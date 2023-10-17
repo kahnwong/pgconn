@@ -14,17 +14,20 @@ var config = readConfig()
 
 // readConfig
 type Config struct {
-	Name     string `yaml:"name"`
-	Hostname string `yaml:"hostname"`
-	Proxy    struct {
-		Kind string `yaml:"kind"`
-		Host string `yaml:"host"`
-	} `yaml:"proxy"`
-	Roles []struct {
-		Username string `yaml:"username"`
-		Password string `yaml:"password"`
-		Dbname   string `yaml:"dbname"`
-	} `yaml:"roles"`
+	Account string `yaml:"account"`
+	Dbs     []struct {
+		Name     string `yaml:"name"`
+		Hostname string `yaml:"hostname"`
+		Proxy    struct {
+			Kind string `yaml:"kind"`
+			Host string `yaml:"host"`
+		} `yaml:"proxy"`
+		Roles []struct {
+			Username string `yaml:"username"`
+			Password string `yaml:"password"`
+			Dbname   string `yaml:"dbname"`
+		} `yaml:"roles"`
+	} `yaml:"dbs"`
 }
 
 func readConfig() []Config {
@@ -57,21 +60,38 @@ func readConfig() []Config {
 	return configs
 }
 
-func getDatabases() []string {
+func getAccounts() []string {
+	accounts := make([]string, 0)
+	for _, v := range config {
+		accounts = append(accounts, v.Account)
+	}
+
+	return accounts
+}
+
+func getDatabases(account string) []string {
 	databases := make([]string, 0)
 	for _, v := range config {
-		databases = append(databases, v.Name)
+		if v.Account == account {
+			for _, v := range v.Dbs {
+				databases = append(databases, v.Name)
+			}
+		}
 	}
 
 	return databases
 }
 
-func getRoles(database string) []string {
+func getRoles(account string, database string) []string {
 	roles := make([]string, 0)
 	for _, v := range config {
-		if v.Name == database {
-			for _, v := range v.Roles {
-				roles = append(roles, v.Username)
+		if v.Account == account {
+			for _, v := range v.Dbs {
+				if v.Name == database {
+					for _, v := range v.Roles {
+						roles = append(roles, v.Username)
+					}
+				}
 			}
 		}
 	}

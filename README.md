@@ -18,15 +18,17 @@ go install github.com/kahnwong/pgconn@latest
 2. create a config file in `~/.config/pgconn/db.yaml`
 
 ```yaml
-- name: sample-db
-  hostname: localhost
-  proxy: # this block is optional
-    kind: cloud-sql-proxy
-    host: $GCP_PROJECT:$GCP_REGION:$INSTANCE_IDENTIFIER
-  roles:
-    - username: postgres
-      password: postgrespassword
-      dbname: sample_db
+- account: personal
+  dbs:
+    - name: sample-db
+      hostname: localhost
+      proxy: # this block is optional
+        kind: cloud-sql-proxy
+        host: $GCP_PROJECT:$GCP_REGION:$INSTANCE_IDENTIFIER
+      roles:
+        - username: postgres
+          password: postgrespassword
+          dbname: sample_db
 
 # if using ssh tunnelling
 proxy:
@@ -37,36 +39,49 @@ proxy:
 ## Available commands
 
 ```bash
-connect DATABASE ROLE
+connect ACCOUNT DATABASE ROLE
 list
-    databases
-    roles DATABASE
+    accounts
+    databases ACCOUNT
+    roles ACCOUNT DATABASE
 ```
 
 ## Examples
 
+`list accounts`
+
+```bash
+❯ pgconn list accounts
+Available accounts:
+  - personal
+  - foo
+```
+
 `list databases`
 
 ```bash
-❯ pgconn list databases
-Available databases:
-    nuc-postgres
-    local-postgres
+❯ pgconn list databases personal
+Account: personal
+Databases:
+  - nuc-postgres
+  - local-postgres
 ```
 
 `list roles`
 
 ```bash
-❯ pgconn list roles nuc-map
-Database: nuc-postgres
+❯ pgconn list roles personal nuc-map
+Account: personal
+Database: nuc-map
 Roles:
-    postgres
+  - a
+  - b
 ```
 
 `connect`
 
 ```bash
-❯ pgconn connect nuc-map postgres
+❯ pgconn connect personal nuc-map postgres
 Server: PostgreSQL 15.3
 Version: 3.5.0
 Home: http://pgcli.com

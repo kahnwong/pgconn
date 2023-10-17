@@ -8,10 +8,10 @@ import (
 
 var listCmd = &cobra.Command{
 	Use:   "list",
-	Short: "Get a list of databases or roles for a given database",
-	Long:  `Get a list of databases or roles for a given database`,
+	Short: "Get a list of accounts, databases or roles",
+	Long:  `Get a list of accounts, databases or roles`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Please specify a command: [databases | roles]")
+		fmt.Println("Please specify a command: [accounts | databases | roles]")
 	},
 }
 

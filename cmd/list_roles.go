@@ -10,35 +10,43 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func DatabaseGet(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
-	return getDatabases(), cobra.ShellCompDirectiveNoFileComp
-}
+//func DatabaseGet(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+//	return getAccounts(), cobra.ShellCompDirectiveNoFileComp
+//}
 
 var rolesCmd = &cobra.Command{
-	Use:               "roles",
-	Short:             "Get a list of roles for a given database",
-	Long:              `Get a list of roles for a given database`,
-	ValidArgsFunction: DatabaseGet,
+	Use:   "roles",
+	Short: "Get a list of roles for a given database",
+	Long:  `Get a list of roles for a given database`,
+	//ValidArgsFunction: AccountGet,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
+			fmt.Println("Please specify an account")
+			os.Exit(1)
+		} else if len(args) == 1 {
 			fmt.Println("Please specify a database")
+			os.Exit(1)
+		} else if len(args) > 2 {
+			fmt.Println("`list databases` only requires two argument")
 			os.Exit(1)
 		}
 
-		isValidDatabase := slices.Contains(getDatabases(), args[0]) // true
+		isValidAccount := slices.Contains(getAccounts(), args[0])
+		isValidDatabase := slices.Contains(getDatabases(args[0]), args[1])
 
-		if isValidDatabase {
+		if isValidAccount && isValidDatabase {
 			green := color.New(color.FgGreen).SprintFunc()
 
-			fmt.Printf("%s %s\n", green("Database:"), args[0])
+			fmt.Printf("%s %s\n", green("Account:"), args[0])
+			fmt.Printf("%s %s\n", green("Database:"), args[1])
+
 			color.Blue("Roles:")
 
-			for _, v := range getRoles(args[0]) {
+			for _, v := range getRoles(args[0], args[1]) {
 				fmt.Printf("  - %s\n", v)
 			}
-
 		} else {
-			fmt.Println("Please specify an available database")
+			fmt.Println("Please specify an available account and database")
 			os.Exit(1)
 		}
 	},
