@@ -10,15 +10,23 @@ import (
 	"github.com/spf13/cobra"
 )
 
-//func DatabaseGet(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
-//	return getAccounts(), cobra.ShellCompDirectiveNoFileComp
-//}
+func RoleGet(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+	var autocomplete []string
+
+	if len(args) == 0 {
+		autocomplete = getAccounts()
+	} else if len(args) == 1 {
+		autocomplete = getDatabases(args[0])
+	}
+
+	return autocomplete, cobra.ShellCompDirectiveNoFileComp
+}
 
 var rolesCmd = &cobra.Command{
-	Use:   "roles",
-	Short: "Get a list of roles for a given database",
-	Long:  `Get a list of roles for a given database`,
-	//ValidArgsFunction: AccountGet,
+	Use:               "roles",
+	Short:             "Get a list of roles for a given database",
+	Long:              `Get a list of roles for a given database`,
+	ValidArgsFunction: RoleGet,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
 			fmt.Println("Please specify an account")
