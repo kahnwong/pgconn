@@ -14,10 +14,12 @@ import (
 func connectionInfoGet(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 	var autocompleteOptions []string
 
-	if len(args) == 0 { // databases
-		autocompleteOptions = getDatabases()
-	} else if len(args) == 1 { // roles
-		autocompleteOptions = getRoles(args[0])
+	if len(args) == 0 { // account
+		autocompleteOptions = getAccounts()
+	} else if len(args) == 1 { // database
+		autocompleteOptions = getDatabases(args[0])
+	} else if len(args) == 2 { // role
+		autocompleteOptions = getRoles(args[0], args[1])
 	}
 
 	return autocompleteOptions, cobra.ShellCompDirectiveNoFileComp
@@ -30,15 +32,21 @@ var connectCmd = &cobra.Command{
 	ValidArgsFunction: connectionInfoGet,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
-			fmt.Println("Please specify a database and role")
+			fmt.Println("Please specify an account, database and role")
 			os.Exit(1)
 		} else if len(args) == 1 {
+			fmt.Println("Please specify a database and role")
+			os.Exit(1)
+		} else if len(args) == 2 {
 			fmt.Println("Please specify a role")
+			os.Exit(1)
+		} else if len(args) > 3 {
+			fmt.Println("`connect` only requires three argument")
 			os.Exit(1)
 		}
 
 		// get db config
-		dbConfig := getConnectionInfo(args[0], args[1])
+		dbConfig := getConnectionInfo(args[0], args[1], args[2])
 
 		// init
 		c := Connect(dbConfig)
@@ -83,20 +91,24 @@ type Connection struct {
 	ProxyHost string
 }
 
-func getConnectionInfo(name string, role string) Connection {
+func getConnectionInfo(account string, database string, role string) Connection {
 	var dbConfig Connection
 
-	for _, db := range config {
-		if db.Name == name {
-			dbConfig.Hostname = db.Hostname
-			dbConfig.ProxyKind = db.Proxy.Kind
-			dbConfig.ProxyHost = db.Proxy.Host
+	for _, a := range config {
+		if a.Account == account {
+			for _, db := range a.Dbs {
+				if db.Name == database {
+					dbConfig.Hostname = db.Hostname
+					dbConfig.ProxyKind = db.Proxy.Kind
+					dbConfig.ProxyHost = db.Proxy.Host
 
-			for _, dbRole := range db.Roles {
-				if dbRole.Username == role {
-					dbConfig.Username = dbRole.Username
-					dbConfig.Password = dbRole.Password
-					dbConfig.Dbname = dbRole.Dbname
+					for _, dbRole := range db.Roles {
+						if dbRole.Username == role {
+							dbConfig.Username = dbRole.Username
+							dbConfig.Password = dbRole.Password
+							dbConfig.Dbname = dbRole.Dbname
+						}
+					}
 				}
 			}
 		}
