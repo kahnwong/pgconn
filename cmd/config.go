@@ -6,13 +6,11 @@ import (
 	"os"
 	"path/filepath"
 
+	"golang.org/x/exp/maps"
 	"gopkg.in/yaml.v3"
 )
 
-// init
-var config = readConfig()
-
-// readConfig
+// read raw config
 type Config struct {
 	Account string `yaml:"account"`
 	Dbs     []struct {
@@ -60,41 +58,61 @@ func readConfig() []Config {
 	return configs
 }
 
-func getAccounts() []string {
-	accounts := make([]string, 0)
-	for _, v := range config {
-		accounts = append(accounts, v.Account)
+// convert to map
+var config = createConfigMap(readConfig())
+
+type Connection struct {
+	Hostname  string
+	ProxyKind string
+	ProxyHost string
+	Username  string
+	Password  string
+	Dbname    string
+}
+
+func createConfigMap(config []Config) map[string]map[string]map[string]Connection {
+	configMap := make(map[string]map[string]map[string]Connection)
+
+	for _, a := range config {
+		configMap[a.Account] = map[string]map[string]Connection{}
+
+		for _, db := range a.Dbs {
+			configMap[a.Account][db.Name] = map[string]Connection{}
+			hostname := db.Hostname
+			proxyKind := db.Proxy.Kind
+			proxyHost := db.Proxy.Host
+
+			for _, role := range db.Roles {
+				configMap[a.Account][db.Name][role.Username] = Connection{
+					Hostname:  hostname,
+					ProxyKind: proxyKind,
+					ProxyHost: proxyHost,
+					Username:  role.Username,
+					Password:  role.Password,
+					Dbname:    role.Dbname,
+				}
+
+			}
+		}
 	}
+
+	return configMap
+}
+
+func getAccounts() []string {
+	accounts := maps.Keys(config)
 
 	return accounts
 }
 
 func getDatabases(account string) []string {
-	databases := make([]string, 0)
-	for _, v := range config {
-		if v.Account == account {
-			for _, v := range v.Dbs {
-				databases = append(databases, v.Name)
-			}
-		}
-	}
+	databases := maps.Keys(config[account])
 
 	return databases
 }
 
 func getRoles(account string, database string) []string {
-	roles := make([]string, 0)
-	for _, v := range config {
-		if v.Account == account {
-			for _, v := range v.Dbs {
-				if v.Name == database {
-					for _, v := range v.Roles {
-						roles = append(roles, v.Username)
-					}
-				}
-			}
-		}
-	}
+	roles := maps.Keys(config[account][database])
 
 	return roles
 }

@@ -46,14 +46,14 @@ var connectCmd = &cobra.Command{
 		}
 
 		// get db config
-		dbConfig := getConnectionInfo(args[0], args[1], args[2])
+		connInfo := config[args[0]][args[1]][args[2]]
 
 		// init
-		c := Connect(dbConfig)
+		c := Connect(connInfo)
 
 		// start proxy process if necessary
 		var proxyCmd *exec.Cmd
-		if dbConfig.ProxyKind != "" {
+		if connInfo.ProxyKind != "" {
 			proxyCmd = c.CreateProxy()
 		}
 
@@ -61,7 +61,7 @@ var connectCmd = &cobra.Command{
 		c.ConnectDB()
 
 		// clean up proxy PID
-		if dbConfig.ProxyKind != "" {
+		if connInfo.ProxyKind != "" {
 			cleanup(proxyCmd)
 		}
 	},
@@ -79,42 +79,6 @@ func (c *ConnectCommand) Help() string {
 
 func (c *ConnectCommand) Synopsis() string {
 	return "Connect to a database"
-}
-
-// config
-type Connection struct {
-	Hostname  string
-	Username  string
-	Password  string
-	Dbname    string
-	ProxyKind string
-	ProxyHost string
-}
-
-func getConnectionInfo(account string, database string, role string) Connection {
-	var dbConfig Connection
-
-	for _, a := range config {
-		if a.Account == account {
-			for _, db := range a.Dbs {
-				if db.Name == database {
-					dbConfig.Hostname = db.Hostname
-					dbConfig.ProxyKind = db.Proxy.Kind
-					dbConfig.ProxyHost = db.Proxy.Host
-
-					for _, dbRole := range db.Roles {
-						if dbRole.Username == role {
-							dbConfig.Username = dbRole.Username
-							dbConfig.Password = dbRole.Password
-							dbConfig.Dbname = dbRole.Dbname
-						}
-					}
-				}
-			}
-		}
-	}
-
-	return dbConfig
 }
 
 // interface
