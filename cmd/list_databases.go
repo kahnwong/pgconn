@@ -11,7 +11,13 @@ import (
 )
 
 func AccountGet(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
-	return getAccounts(), cobra.ShellCompDirectiveNoFileComp
+	var autocomplete []string
+
+	if len(args) == 0 {
+		autocomplete = getAccounts()
+	}
+
+	return autocomplete, cobra.ShellCompDirectiveNoFileComp
 }
 
 var databasesCmd = &cobra.Command{
