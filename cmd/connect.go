@@ -90,7 +90,7 @@ type Connect interface {
 func (c Connection) CreateProxy() *exec.Cmd {
 	var proxyCmd string
 	if c.ProxyKind == "ssh" {
-		proxyCmd = fmt.Sprintf("ssh -N -L 5432:%s:5432 %s", c.Hostname, c.ProxyHost)
+		proxyCmd = fmt.Sprintf("ssh -N -L %d:%s:5432 %s", c.ProxyTargetPort, c.Hostname, c.ProxyHost)
 	} else if c.ProxyKind == "cloud-sql-proxy" {
 		// check if cloud-sql-proxy exists
 		binaryName := "cloud-sql-proxy"
@@ -100,7 +100,7 @@ func (c Connection) CreateProxy() *exec.Cmd {
 			os.Exit(1)
 		}
 
-		proxyCmd = fmt.Sprintf("cloud-sql-proxy %s --quiet", c.ProxyHost)
+		proxyCmd = fmt.Sprintf("cloud-sql-proxy %s --port %d --quiet", c.ProxyHost, c.ProxyTargetPort)
 	}
 
 	cmd := exec.Command("/bin/sh", "-c", proxyCmd)
@@ -137,7 +137,7 @@ func (c Connection) ConnectDB() *exec.Cmd {
 	}
 
 	// connect
-	connectionString := fmt.Sprintf("postgresql://%s:%s@%s:5432/%s?sslmode=disable", c.Username, c.Password, connectHostname, c.Dbname)
+	connectionString := fmt.Sprintf("postgresql://%s:%s@%s:%d/%s?sslmode=disable", c.Username, c.Password, connectHostname, c.ProxyTargetPort, c.Dbname)
 	cmd := exec.Command("/bin/sh", "-c", fmt.Sprintf("pgcli \"%s\"", connectionString))
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
