@@ -86,13 +86,17 @@ func createConfigMap(config []Config) map[string]map[string]map[string]Connectio
 			proxyHost := db.Proxy.Host
 
 			for _, role := range db.Roles {
-				// create random port for ssh port forwarding
-				min := 5432
-				max := 8000
+				var port int
+				if proxyKind != "" {
+					// create random port for ssh port forwarding
+					min := 5432
+					max := 8000
 
-				r := rand.New(rand.NewSource(time.Now().UnixNano()))
-				port := r.Intn(max-min+1) + min
-
+					r := rand.New(rand.NewSource(time.Now().UnixNano()))
+					port = r.Intn(max-min+1) + min
+				} else {
+					port = 5432
+				}
 				// main
 				configMap[a.Account][db.Name][role.Username] = Connection{
 					Hostname:        hostname,
