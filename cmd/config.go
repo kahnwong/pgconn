@@ -3,10 +3,8 @@ package cmd
 import (
 	"fmt"
 	"log"
-	"math/rand"
 	"os"
 	"path/filepath"
-	"time"
 
 	"golang.org/x/exp/maps"
 	"gopkg.in/yaml.v3"
@@ -64,13 +62,13 @@ func readConfig() []Config {
 var config = createConfigMap(readConfig())
 
 type Connection struct {
-	Hostname        string
-	ProxyKind       string
-	ProxyHost       string
-	ProxyTargetPort int
-	Username        string
-	Password        string
-	Dbname          string
+	Hostname  string
+	ProxyKind string
+	ProxyHost string
+	Port      int
+	Username  string
+	Password  string
+	Dbname    string
 }
 
 func createConfigMap(config []Config) map[string]map[string]map[string]Connection {
@@ -86,28 +84,15 @@ func createConfigMap(config []Config) map[string]map[string]map[string]Connectio
 			proxyHost := db.Proxy.Host
 
 			for _, role := range db.Roles {
-				var port int
-				if proxyKind != "" {
-					// create random port for ssh port forwarding
-					min := 5432
-					max := 8000
-
-					r := rand.New(rand.NewSource(time.Now().UnixNano()))
-					port = r.Intn(max-min+1) + min
-				} else {
-					port = 5432
-				}
-				// main
 				configMap[a.Account][db.Name][role.Username] = Connection{
-					Hostname:        hostname,
-					ProxyKind:       proxyKind,
-					ProxyHost:       proxyHost,
-					ProxyTargetPort: port,
-					Username:        role.Username,
-					Password:        role.Password,
-					Dbname:          role.Dbname,
+					Hostname:  hostname,
+					ProxyKind: proxyKind,
+					ProxyHost: proxyHost,
+					Port:      5432,
+					Username:  role.Username,
+					Password:  role.Password,
+					Dbname:    role.Dbname,
 				}
-
 			}
 		}
 	}
