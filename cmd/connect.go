@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"log"
+	"math/rand"
 	"os"
 	"os/exec"
 	"syscall"
@@ -48,17 +49,16 @@ var connectCmd = &cobra.Command{
 		// get db config
 		connInfo := config[args[0]][args[1]][args[2]]
 
-		// init
-		c := Connect(connInfo)
-
 		// start proxy process if necessary
 		var proxyCmd *exec.Cmd
 		if connInfo.ProxyKind != "" {
-			proxyCmd = c.CreateProxy()
+			var port int
+			proxyCmd, port = CreateProxy(connInfo)
+			connInfo.Port = port
 		}
 
 		// connect via pgcli
-		c.ConnectDB()
+		ConnectDB(connInfo)
 
 		// clean up proxy PID
 		if connInfo.ProxyKind != "" {
@@ -81,16 +81,20 @@ func (c *ConnectCommand) Synopsis() string {
 	return "Connect to a database"
 }
 
-// interface
-type Connect interface {
-	CreateProxy() *exec.Cmd
-	ConnectDB() *exec.Cmd
-}
+// functions
+func CreateProxy(c Connection) (*exec.Cmd, int) {
+	// set port
+	// random port for ssh port forwarding
+	min := 5432
+	max := 8000
 
-func (c Connection) CreateProxy() *exec.Cmd {
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	port := r.Intn(max-min+1) + min
+
+	// create cmd
 	var proxyCmd string
 	if c.ProxyKind == "ssh" {
-		proxyCmd = fmt.Sprintf("ssh -N -L %d:%s:5432 %s", c.ProxyTargetPort, c.Hostname, c.ProxyHost)
+		proxyCmd = fmt.Sprintf("ssh -N -L %d:%s:5432 %s", port, c.Hostname, c.ProxyHost)
 	} else if c.ProxyKind == "cloud-sql-proxy" {
 		// check if cloud-sql-proxy exists
 		binaryName := "cloud-sql-proxy"
@@ -100,9 +104,10 @@ func (c Connection) CreateProxy() *exec.Cmd {
 			os.Exit(1)
 		}
 
-		proxyCmd = fmt.Sprintf("cloud-sql-proxy %s --port %d --quiet", c.ProxyHost, c.ProxyTargetPort)
+		proxyCmd = fmt.Sprintf("cloud-sql-proxy %s --port %d --quiet", c.ProxyHost, port)
 	}
 
+	// main
 	cmd := exec.Command("/bin/sh", "-c", proxyCmd)
 	cmd.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
 	if err := cmd.Start(); err != nil {
@@ -112,10 +117,10 @@ func (c Connection) CreateProxy() *exec.Cmd {
 
 	time.Sleep(1 * time.Second) // important, so proxy has some time to start up
 
-	return cmd
+	return cmd, port
 }
 
-func (c Connection) ConnectDB() *exec.Cmd {
+func ConnectDB(c Connection) *exec.Cmd {
 	// check if pgcli exists
 	binaryName := "pgcli"
 	_, err := exec.LookPath(binaryName)
@@ -137,7 +142,7 @@ func (c Connection) ConnectDB() *exec.Cmd {
 	}
 
 	// connect
-	connectionString := fmt.Sprintf("postgresql://%s:%s@%s:%d/%s?sslmode=disable", c.Username, c.Password, connectHostname, c.ProxyTargetPort, c.Dbname)
+	connectionString := fmt.Sprintf("postgresql://%s:%s@%s:%d/%s?sslmode=disable", c.Username, c.Password, connectHostname, c.Port, c.Dbname)
 	cmd := exec.Command("/bin/sh", "-c", fmt.Sprintf("pgcli \"%s\"", connectionString))
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
@@ -151,7 +156,6 @@ func (c Connection) ConnectDB() *exec.Cmd {
 	return cmd
 }
 
-// cleanup
 func cleanup(cmd *exec.Cmd) {
 	pgid, err := syscall.Getpgid(cmd.Process.Pid)
 	if err == nil {
