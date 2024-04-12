@@ -8,9 +8,9 @@ import (
 
 var rootCmd = &cobra.Command{
 	Use:     "pgconn",
-	Version: "0.7.0",
-	Short:   "pgcli wrapper to connect to PostgreSQL database specified in db.yaml",
-	Long:    `pgcli wrapper to connect to PostgreSQL database specified in db.yaml. Proxy/tunnel connection is automatically created and killed when pgcli is exited. `,
+	Version: "0.8.0",
+	Short:   "pgcli wrapper to connect to PostgreSQL database specified in pgconn.sops.yaml",
+	Long:    `pgcli wrapper to connect to PostgreSQL database specified in pgconn.sops.yaml. Proxy/tunnel connection is automatically created and killed when pgcli is exited. `,
 }
 
 func Execute() {

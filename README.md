@@ -15,25 +15,26 @@
 go install github.com/kahnwong/pgconn@latest
 ```
 
-2. create a config file in `~/.config/pgconn/db.yaml`
+2. create a config file with SOPs in `~/.config/pgconn/pgconn.sops.yaml`
 
 ```yaml
-- account: personal
-  dbs:
-    - name: sample-db
-      hostname: localhost
-      proxy: # this block is optional
-        kind: cloud-sql-proxy
-        host: $GCP_PROJECT:$GCP_REGION:$INSTANCE_IDENTIFIER
-      roles:
-        - username: postgres
-          password: postgrespassword
-          dbname: sample_db
+pgconn:
+  - account: personal
+    dbs:
+      - name: sample-db
+        hostname: localhost
+        proxy: # this block is optional
+          kind: cloud-sql-proxy
+          host: $GCP_PROJECT:$GCP_REGION:$INSTANCE_IDENTIFIER
+        roles:
+          - username: postgres
+            password: postgrespassword
+            dbname: sample_db
 
 # if using ssh tunnelling
 proxy:
-  kind: ssh
-  host: $SSH_CONFIG_HOST
+kind: ssh
+host: $SSH_CONFIG_HOST
 ```
 
 ## Available commands

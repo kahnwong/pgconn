@@ -6,34 +6,37 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/getsops/sops/v3/decrypt"
 	"golang.org/x/exp/maps"
 	"gopkg.in/yaml.v3"
 )
 
 // read raw config
 type Config struct {
-	Account string `yaml:"account"`
-	Dbs     []struct {
-		Name     string `yaml:"name"`
-		Hostname string `yaml:"hostname"`
-		Proxy    struct {
-			Kind string `yaml:"kind"`
-			Host string `yaml:"host"`
-		} `yaml:"proxy"`
-		Roles []struct {
-			Username string `yaml:"username"`
-			Password string `yaml:"password"`
-			Dbname   string `yaml:"dbname"`
-		} `yaml:"roles"`
-	} `yaml:"dbs"`
+	Pgconn []struct {
+		Account string `yaml:"account"`
+		Dbs     []struct {
+			Name     string `yaml:"name"`
+			Hostname string `yaml:"hostname"`
+			Proxy    struct {
+				Kind string `yaml:"kind"`
+				Host string `yaml:"host"`
+			} `yaml:"proxy"`
+			Roles []struct {
+				Username string `yaml:"username"`
+				Password string `yaml:"password"`
+				Dbname   string `yaml:"dbname"`
+			} `yaml:"roles"`
+		} `yaml:"dbs"`
+	} `yaml:"pgconn"`
 }
 
-func readConfig() []Config {
+func readConfig() Config {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
 		log.Fatal(err)
 	}
-	filename := filepath.Join(homeDir, ".config", "pgconn", "db.yaml")
+	filename := filepath.Join(homeDir, ".config", "pgconn", "pgconn.sops.yaml")
 
 	// Check if the file exists
 	_, err = os.Stat(filename)
@@ -43,19 +46,19 @@ func readConfig() []Config {
 		os.Exit(1)
 	}
 
-	var configs []Config
+	var config Config
 
-	source, err := os.ReadFile(filename)
+	data, err := decrypt.File(filename, "yaml")
 	if err != nil {
-		fmt.Printf("failed reading config file: %v\n", err)
+		fmt.Println(fmt.Printf("Failed to decrypt: %v", err))
 	}
 
-	err = yaml.Unmarshal(source, &configs)
+	err = yaml.Unmarshal(data, &config)
 	if err != nil {
 		fmt.Printf("error: %v\n", err)
 	}
 
-	return configs
+	return config
 }
 
 // convert to map
@@ -71,10 +74,10 @@ type Connection struct {
 	Dbname    string
 }
 
-func createConfigMap(config []Config) map[string]map[string]map[string]Connection {
+func createConfigMap(config Config) map[string]map[string]map[string]Connection {
 	configMap := make(map[string]map[string]map[string]Connection)
 
-	for _, a := range config {
+	for _, a := range config.Pgconn {
 		configMap[a.Account] = map[string]map[string]Connection{}
 
 		for _, db := range a.Dbs {
