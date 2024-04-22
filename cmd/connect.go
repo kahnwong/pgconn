@@ -9,6 +9,8 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/fatih/color"
+
 	"github.com/spf13/cobra"
 )
 
@@ -140,6 +142,10 @@ func ConnectDB(c Connection) *exec.Cmd {
 	} else {
 		connectHostname = c.Hostname
 	}
+
+	// print port
+	green := color.New(color.FgGreen).SprintFunc()
+	fmt.Printf("Port: %s\n", green(c.Port))
 
 	// connect
 	connectionString := fmt.Sprintf("postgresql://%s:%s@%s:%d/%s?sslmode=disable", c.Username, c.Password, connectHostname, c.Port, c.Dbname)
