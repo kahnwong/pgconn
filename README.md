@@ -33,8 +33,8 @@ pgconn:
 
 # if using ssh tunnelling
 proxy:
-kind: ssh
-host: $SSH_CONFIG_HOST
+  kind: ssh
+  host: $SSH_CONFIG_HOST
 ```
 
 ## Available commands
