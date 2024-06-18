@@ -69,16 +69,6 @@ func init() {
 	rootCmd.AddCommand(connectCmd)
 }
 
-type ConnectCommand struct{}
-
-func (c *ConnectCommand) Help() string {
-	return "Connect to a database"
-}
-
-func (c *ConnectCommand) Synopsis() string {
-	return "Connect to a database"
-}
-
 // functions
 func cleanup(cmd *exec.Cmd) {
 	pgid, err := syscall.Getpgid(cmd.Process.Pid)
