@@ -7,7 +7,6 @@ import (
 	"path/filepath"
 
 	"github.com/getsops/sops/v3/decrypt"
-	"golang.org/x/exp/maps"
 	"gopkg.in/yaml.v3"
 )
 
@@ -101,22 +100,4 @@ func createConfigMap(config Config) map[string]map[string]map[string]Connection 
 	}
 
 	return configMap
-}
-
-func getAccounts() []string {
-	accounts := maps.Keys(config)
-
-	return accounts
-}
-
-func getDatabases(account string) []string {
-	databases := maps.Keys(config[account])
-
-	return databases
-}
-
-func getRoles(account string, database string) []string {
-	roles := maps.Keys(config[account][database])
-
-	return roles
 }
