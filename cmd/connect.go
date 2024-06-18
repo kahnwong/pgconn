@@ -2,10 +2,8 @@ package cmd
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"os/exec"
-	"syscall"
 
 	"github.com/spf13/cobra"
 )
@@ -60,22 +58,11 @@ var connectCmd = &cobra.Command{
 
 		// clean up proxy PID
 		if connInfo.ProxyKind != "" {
-			cleanup(proxyCmd)
+			killProxyPid(proxyCmd)
 		}
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(connectCmd)
-}
-
-// functions
-func cleanup(cmd *exec.Cmd) {
-	pgid, err := syscall.Getpgid(cmd.Process.Pid)
-	if err == nil {
-		err = syscall.Kill(-pgid, syscall.SIGKILL)
-		if err != nil {
-			log.Fatal(err)
-		}
-	}
 }

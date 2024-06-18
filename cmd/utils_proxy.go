@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 	"math/rand"
 	"os"
 	"os/exec"
@@ -45,4 +46,14 @@ func CreateProxy(c Connection) (*exec.Cmd, int) {
 	time.Sleep(1 * time.Second) // important, so proxy has some time to start up
 
 	return cmd, port
+}
+
+func killProxyPid(cmd *exec.Cmd) {
+	pgid, err := syscall.Getpgid(cmd.Process.Pid)
+	if err == nil {
+		err = syscall.Kill(-pgid, syscall.SIGKILL)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
 }
