@@ -10,6 +10,9 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+// init
+var config = createConfigMap(readConfig())
+
 // read raw config
 type Config struct {
 	Pgconn []struct {
@@ -61,8 +64,6 @@ func readConfig() Config {
 }
 
 // convert to map
-var config = createConfigMap(readConfig())
-
 type Connection struct {
 	Hostname  string
 	ProxyKind string
