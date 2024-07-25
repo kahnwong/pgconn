@@ -8,9 +8,11 @@ import (
 	"os/exec"
 	"syscall"
 	"time"
+
+	"github.com/kahnwong/pgconn/config"
 )
 
-func CreateProxy(c Connection) (*exec.Cmd, int) {
+func CreateProxy(c config.Connection) (*exec.Cmd, int) {
 	// set port
 	// random port for ssh port forwarding
 	minPort := 5432

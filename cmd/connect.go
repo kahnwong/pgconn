@@ -43,7 +43,7 @@ var connectCmd = &cobra.Command{
 		}
 
 		// get db config
-		connInfo := config[args[0]][args[1]][args[2]]
+		connInfo := connMap[args[0]][args[1]][args[2]]
 
 		// start proxy process if necessary
 		var proxyCmd *exec.Cmd

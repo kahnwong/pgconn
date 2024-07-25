@@ -6,9 +6,10 @@ import (
 	"os/exec"
 
 	"github.com/fatih/color"
+	"github.com/kahnwong/pgconn/config"
 )
 
-func ConnectDB(c Connection) *exec.Cmd {
+func ConnectDB(c config.Connection) *exec.Cmd {
 	// check if pgcli exists
 	binaryName := "pgcli"
 	_, err := exec.LookPath(binaryName)

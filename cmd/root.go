@@ -3,8 +3,11 @@ package cmd
 import (
 	"os"
 
+	"github.com/kahnwong/pgconn/config"
 	"github.com/spf13/cobra"
 )
+
+var connMap = config.ConnMap
 
 var rootCmd = &cobra.Command{
 	Use:   "pgconn",
