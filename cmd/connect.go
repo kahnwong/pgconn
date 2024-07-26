@@ -26,7 +26,6 @@ func connectionInfoGet(cmd *cobra.Command, args []string, toComplete string) ([]
 var connectCmd = &cobra.Command{
 	Use:               "connect [database] [role]",
 	Short:             "Connect to a database with specified role",
-	Long:              `Connect to a database with specified role`,
 	ValidArgsFunction: connectionInfoGet,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {

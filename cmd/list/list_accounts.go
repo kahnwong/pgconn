@@ -12,7 +12,6 @@ import (
 var accountsCmd = &cobra.Command{
 	Use:   "accounts",
 	Short: "Get a list of accounts",
-	Long:  `Get a list of accounts`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) > 0 {
 			fmt.Println("`list accounts` does not require an argument")

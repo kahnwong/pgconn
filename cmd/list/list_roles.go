@@ -26,7 +26,6 @@ func RoleGet(cmd *cobra.Command, args []string, toComplete string) ([]string, co
 var rolesCmd = &cobra.Command{
 	Use:               "roles",
 	Short:             "Get a list of roles for a given database",
-	Long:              `Get a list of roles for a given database`,
 	ValidArgsFunction: RoleGet,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
