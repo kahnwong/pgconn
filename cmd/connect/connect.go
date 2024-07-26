@@ -1,13 +1,17 @@
-package cmd
+package connect
 
 import (
 	"fmt"
 	"os"
 	"os/exec"
 
+	"github.com/kahnwong/pgconn/config"
 	"github.com/kahnwong/pgconn/utils"
+
 	"github.com/spf13/cobra"
 )
+
+var connMap = config.ConnMap
 
 func connectionInfoGet(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 	var autocompleteOptions []string
@@ -23,7 +27,7 @@ func connectionInfoGet(cmd *cobra.Command, args []string, toComplete string) ([]
 	return autocompleteOptions, cobra.ShellCompDirectiveNoFileComp
 }
 
-var connectCmd = &cobra.Command{
+var Cmd = &cobra.Command{
 	Use:               "connect [database] [role]",
 	Short:             "Connect to a database with specified role",
 	ValidArgsFunction: connectionInfoGet,

@@ -3,12 +3,10 @@ package cmd
 import (
 	"os"
 
+	"github.com/kahnwong/pgconn/cmd/connect"
 	"github.com/kahnwong/pgconn/cmd/list"
-	"github.com/kahnwong/pgconn/config"
 	"github.com/spf13/cobra"
 )
-
-var connMap = config.ConnMap
 
 var rootCmd = &cobra.Command{
 	Use:   "pgconn",
@@ -26,5 +24,5 @@ func Execute() {
 func init() {
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	rootCmd.AddCommand(list.Cmd)
-	rootCmd.AddCommand(connectCmd)
+	rootCmd.AddCommand(connect.Cmd)
 }
