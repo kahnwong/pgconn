@@ -10,14 +10,6 @@ import (
 )
 
 func connectDB(c config.Connection) *exec.Cmd {
-	// check if pgcli exists
-	binaryName := "pgcli"
-	_, err := exec.LookPath(binaryName)
-	if err != nil {
-		fmt.Printf("Binary '%s' not found in the PATH\n", binaryName)
-		os.Exit(1)
-	}
-
 	// set hostname
 	var connectHostname string
 	if c.ProxyKind != "" {

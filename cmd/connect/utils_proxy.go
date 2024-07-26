@@ -27,12 +27,7 @@ func createProxy(c config.Connection) (*exec.Cmd, int) {
 		proxyCmd = fmt.Sprintf("ssh -N -L %d:%s:5432 %s", port, c.Hostname, c.ProxyHost)
 	} else if c.ProxyKind == "cloud-sql-proxy" {
 		// check if cloud-sql-proxy exists
-		binaryName := "cloud-sql-proxy"
-		_, err := exec.LookPath(binaryName)
-		if err != nil {
-			fmt.Printf("Binary '%s' not found in the PATH\n", binaryName)
-			os.Exit(1)
-		}
+		checkIfBinaryExists("cloud-sql-proxy")
 
 		proxyCmd = fmt.Sprintf("cloud-sql-proxy %s --port %d --quiet", c.ProxyHost, port)
 	}

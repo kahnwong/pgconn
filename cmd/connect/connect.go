@@ -66,3 +66,7 @@ var Cmd = &cobra.Command{
 		}
 	},
 }
+
+func init() {
+	checkIfBinaryExists("pgcli")
+}
