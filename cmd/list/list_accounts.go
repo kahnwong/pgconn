@@ -1,10 +1,11 @@
-package cmd
+package list
 
 import (
 	"fmt"
 	"os"
 
 	"github.com/fatih/color"
+	"github.com/kahnwong/pgconn/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -18,12 +19,8 @@ var accountsCmd = &cobra.Command{
 			os.Exit(1)
 		}
 		color.Green("Available accounts:")
-		for _, v := range getAccounts() {
+		for _, v := range utils.GetAccounts() {
 			fmt.Printf("  - %s\n", v)
 		}
 	},
-}
-
-func init() {
-	listCmd.AddCommand(accountsCmd)
 }

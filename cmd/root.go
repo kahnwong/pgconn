@@ -3,6 +3,7 @@ package cmd
 import (
 	"os"
 
+	"github.com/kahnwong/pgconn/cmd/list"
 	"github.com/kahnwong/pgconn/config"
 	"github.com/spf13/cobra"
 )
@@ -24,4 +25,5 @@ func Execute() {
 
 func init() {
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	rootCmd.AddCommand(list.Cmd)
 }

@@ -1,4 +1,4 @@
-package cmd
+package list
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var listCmd = &cobra.Command{
+var Cmd = &cobra.Command{
 	Use:   "list",
 	Short: "Get a list of accounts, databases or roles",
 	Long:  `Get a list of accounts, databases or roles`,
@@ -16,5 +16,7 @@ var listCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(listCmd)
+	Cmd.AddCommand(accountsCmd)
+	Cmd.AddCommand(databasesCmd)
+	Cmd.AddCommand(rolesCmd)
 }

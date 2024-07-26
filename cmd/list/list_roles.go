@@ -1,9 +1,10 @@
-package cmd
+package list
 
 import (
 	"fmt"
 	"os"
 
+	"github.com/kahnwong/pgconn/utils"
 	"golang.org/x/exp/slices"
 
 	"github.com/fatih/color"
@@ -14,9 +15,9 @@ func RoleGet(cmd *cobra.Command, args []string, toComplete string) ([]string, co
 	var autocomplete []string
 
 	if len(args) == 0 {
-		autocomplete = getAccounts()
+		autocomplete = utils.GetAccounts()
 	} else if len(args) == 1 {
-		autocomplete = getDatabases(args[0])
+		autocomplete = utils.GetDatabases(args[0])
 	}
 
 	return autocomplete, cobra.ShellCompDirectiveNoFileComp
@@ -39,8 +40,8 @@ var rolesCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		isValidAccount := slices.Contains(getAccounts(), args[0])
-		isValidDatabase := slices.Contains(getDatabases(args[0]), args[1])
+		isValidAccount := slices.Contains(utils.GetAccounts(), args[0])
+		isValidDatabase := slices.Contains(utils.GetDatabases(args[0]), args[1])
 
 		if isValidAccount && isValidDatabase {
 			green := color.New(color.FgGreen).SprintFunc()
@@ -50,7 +51,7 @@ var rolesCmd = &cobra.Command{
 
 			color.Blue("Roles:")
 
-			for _, v := range getRoles(args[0], args[1]) {
+			for _, v := range utils.GetRoles(args[0], args[1]) {
 				fmt.Printf("  - %s\n", v)
 			}
 		} else {
@@ -58,8 +59,4 @@ var rolesCmd = &cobra.Command{
 			os.Exit(1)
 		}
 	},
-}
-
-func init() {
-	listCmd.AddCommand(rolesCmd)
 }

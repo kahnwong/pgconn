@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 
+	"github.com/kahnwong/pgconn/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -12,11 +13,11 @@ func connectionInfoGet(cmd *cobra.Command, args []string, toComplete string) ([]
 	var autocompleteOptions []string
 
 	if len(args) == 0 { // account
-		autocompleteOptions = getAccounts()
+		autocompleteOptions = utils.GetAccounts()
 	} else if len(args) == 1 { // database
-		autocompleteOptions = getDatabases(args[0])
+		autocompleteOptions = utils.GetDatabases(args[0])
 	} else if len(args) == 2 { // role
-		autocompleteOptions = getRoles(args[0], args[1])
+		autocompleteOptions = utils.GetRoles(args[0], args[1])
 	}
 
 	return autocompleteOptions, cobra.ShellCompDirectiveNoFileComp
@@ -49,16 +50,16 @@ var connectCmd = &cobra.Command{
 		var proxyCmd *exec.Cmd
 		if connInfo.ProxyKind != "" {
 			var port int
-			proxyCmd, port = CreateProxy(connInfo)
+			proxyCmd, port = utils.CreateProxy(connInfo)
 			connInfo.Port = port
 		}
 
 		// connect via pgcli
-		ConnectDB(connInfo)
+		utils.ConnectDB(connInfo)
 
 		// clean up proxy PID
 		if connInfo.ProxyKind != "" {
-			killProxyPid(proxyCmd)
+			utils.KillProxyPid(proxyCmd)
 		}
 	},
 }

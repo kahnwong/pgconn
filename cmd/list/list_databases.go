@@ -1,20 +1,20 @@
-package cmd
+package list
 
 import (
 	"fmt"
 	"os"
 
-	"golang.org/x/exp/slices"
-
 	"github.com/fatih/color"
+	"github.com/kahnwong/pgconn/utils"
 	"github.com/spf13/cobra"
+	"golang.org/x/exp/slices"
 )
 
 func AccountGet(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 	var autocomplete []string
 
 	if len(args) == 0 {
-		autocomplete = getAccounts()
+		autocomplete = utils.GetAccounts()
 	}
 
 	return autocomplete, cobra.ShellCompDirectiveNoFileComp
@@ -34,14 +34,14 @@ var databasesCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		isValidAccount := slices.Contains(getAccounts(), args[0])
+		isValidAccount := slices.Contains(utils.GetAccounts(), args[0])
 		if isValidAccount {
 			green := color.New(color.FgGreen).SprintFunc()
 
 			fmt.Printf("%s %s\n", green("Account:"), args[0])
 			color.Blue("Databases:")
 
-			for _, v := range getDatabases(args[0]) {
+			for _, v := range utils.GetDatabases(args[0]) {
 				fmt.Printf("  - %s\n", v)
 			}
 		} else {
@@ -49,8 +49,4 @@ var databasesCmd = &cobra.Command{
 			os.Exit(1)
 		}
 	},
-}
-
-func init() {
-	listCmd.AddCommand(databasesCmd)
 }

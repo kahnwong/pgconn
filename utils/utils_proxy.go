@@ -1,4 +1,4 @@
-package cmd
+package utils
 
 import (
 	"fmt"
@@ -50,7 +50,7 @@ func CreateProxy(c config.Connection) (*exec.Cmd, int) {
 	return cmd, port
 }
 
-func killProxyPid(cmd *exec.Cmd) {
+func KillProxyPid(cmd *exec.Cmd) {
 	pgid, err := syscall.Getpgid(cmd.Process.Pid)
 	if err == nil {
 		err = syscall.Kill(-pgid, syscall.SIGKILL)
