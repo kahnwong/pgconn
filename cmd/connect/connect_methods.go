@@ -2,6 +2,7 @@ package connect
 
 import (
 	"fmt"
+	"log"
 	"math/rand"
 	"os"
 	"os/exec"
@@ -93,5 +94,17 @@ func (c connection) Connect() {
 	if err := cmd.Run(); err != nil {
 		fmt.Printf("Failed to start the second process: %v\n", err)
 		os.Exit(1)
+	}
+}
+
+func (c connection) KillProxyPid() {
+	if c.ProxyKind != "" {
+		pgid, err := syscall.Getpgid(c.ProxyCmd.Process.Pid)
+		if err == nil {
+			err = syscall.Kill(-pgid, syscall.SIGKILL)
+			if err != nil {
+				log.Fatal(err)
+			}
+		}
 	}
 }
