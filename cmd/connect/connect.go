@@ -2,8 +2,10 @@ package connect
 
 import (
 	"fmt"
+	"math/rand"
 	"os"
 	"os/exec"
+	"time"
 
 	"github.com/kahnwong/pgconn/config"
 	"github.com/kahnwong/pgconn/utils"
@@ -12,6 +14,26 @@ import (
 )
 
 var connMap = config.ConnMap
+
+type connection struct {
+	config.Connection
+}
+
+func (c connection) SetProxyPort() int {
+	// prevent port conflict in case
+	// simultaneously connecting to proxied db
+	if c.ProxyKind == "" {
+		return c.Port
+	} else {
+		minPort := 5432
+		maxPort := 8000
+
+		r := rand.New(rand.NewSource(time.Now().UnixNano()))
+		port := r.Intn(maxPort-minPort+1) + minPort
+
+		return port
+	}
+}
 
 func connectionInfoGet(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 	var autocompleteOptions []string
@@ -48,20 +70,21 @@ var Cmd = &cobra.Command{
 
 		// get db config
 		connInfo := connMap[args[0]][args[1]][args[2]]
+		c := connection{connInfo}
 
 		// start proxy process if necessary
 		var proxyCmd *exec.Cmd
-		if connInfo.ProxyKind != "" {
-			var port int
-			proxyCmd, port = createProxy(connInfo)
-			connInfo.Port = port
+		c.Port = c.SetProxyPort()
+
+		if c.ProxyKind != "" {
+			proxyCmd = createProxy(c)
 		}
 
 		// connect via pgcli
-		connectDB(connInfo)
+		connectDB(c)
 
 		// clean up proxy PID
-		if connInfo.ProxyKind != "" {
+		if c.ProxyKind != "" {
 			killProxyPid(proxyCmd)
 		}
 	},

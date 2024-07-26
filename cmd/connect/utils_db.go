@@ -6,10 +6,9 @@ import (
 	"os/exec"
 
 	"github.com/fatih/color"
-	"github.com/kahnwong/pgconn/config"
 )
 
-func connectDB(c config.Connection) *exec.Cmd {
+func connectDB(c connection) *exec.Cmd {
 	// set hostname
 	var connectHostname string
 	if c.ProxyKind != "" {
