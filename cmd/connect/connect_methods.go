@@ -8,6 +8,8 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/kahnwong/pgconn/color"
+
 	"github.com/kahnwong/pgconn/config"
 )
 
@@ -60,5 +62,34 @@ func (c connection) InitProxy() *exec.Cmd {
 		return cmd
 	} else {
 		return nil
+	}
+}
+
+func (c connection) Connect() {
+	// set hostname
+	var connectHostname string
+	if c.ProxyKind != "" {
+		if c.ProxyKind == "ssh" {
+			connectHostname = "localhost"
+		} else if c.ProxyKind == "cloud-sql-proxy" {
+			connectHostname = "127.0.0.1"
+		}
+	} else {
+		connectHostname = c.Hostname
+	}
+
+	// print port
+	fmt.Printf("Port: %s\n", color.Green(c.ProxyPort))
+
+	// connect
+	connectionString := fmt.Sprintf("postgresql://%s:%s@%s:%d/%s?sslmode=disable", c.Username, c.Password, connectHostname, c.ProxyPort, c.Dbname)
+	cmd := exec.Command("/bin/sh", "-c", fmt.Sprintf("pgcli \"%s\"", connectionString))
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	if err := cmd.Run(); err != nil {
+		fmt.Printf("Failed to start the second process: %v\n", err)
+		os.Exit(1)
 	}
 }

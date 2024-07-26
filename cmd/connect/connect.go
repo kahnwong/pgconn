@@ -50,7 +50,7 @@ var Cmd = &cobra.Command{
 		c.ProxyCmd = c.InitProxy()
 
 		// connect via pgcli
-		connectDB(c)
+		c.Connect()
 
 		// clean up proxy PID
 		if c.ProxyKind != "" {
