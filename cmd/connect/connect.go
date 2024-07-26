@@ -45,10 +45,16 @@ var Cmd = &cobra.Command{
 		// main
 		connInfo := connMap[args[0]][args[1]][args[2]]
 		c := connection{connInfo, 0, nil}
-		c.ProxyPort = c.SetProxyPort()
-		c.ProxyCmd = c.InitProxy()
-		c.Connect()
-		c.KillProxyPid()
+
+		if c.ProxyKind != "" {
+			c.ProxyPort = c.SetProxyPort()
+			c.ProxyCmd = c.InitProxy()
+			c.Connect()
+			c.KillProxyPid()
+		} else {
+			c.ProxyPort = c.Port
+			c.Connect()
+		}
 	},
 }
 
