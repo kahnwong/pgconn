@@ -1,4 +1,4 @@
-package utils
+package connect
 
 import (
 	"fmt"
@@ -9,7 +9,7 @@ import (
 	"github.com/kahnwong/pgconn/config"
 )
 
-func ConnectDB(c config.Connection) *exec.Cmd {
+func connectDB(c config.Connection) *exec.Cmd {
 	// check if pgcli exists
 	binaryName := "pgcli"
 	_, err := exec.LookPath(binaryName)

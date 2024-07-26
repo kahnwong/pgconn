@@ -1,4 +1,4 @@
-package utils
+package connect
 
 import (
 	"fmt"
@@ -12,7 +12,7 @@ import (
 	"github.com/kahnwong/pgconn/config"
 )
 
-func CreateProxy(c config.Connection) (*exec.Cmd, int) {
+func createProxy(c config.Connection) (*exec.Cmd, int) {
 	// set port
 	// random port for ssh port forwarding
 	minPort := 5432
@@ -50,7 +50,7 @@ func CreateProxy(c config.Connection) (*exec.Cmd, int) {
 	return cmd, port
 }
 
-func KillProxyPid(cmd *exec.Cmd) {
+func killProxyPid(cmd *exec.Cmd) {
 	pgid, err := syscall.Getpgid(cmd.Process.Pid)
 	if err == nil {
 		err = syscall.Kill(-pgid, syscall.SIGKILL)

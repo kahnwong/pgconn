@@ -53,16 +53,16 @@ var Cmd = &cobra.Command{
 		var proxyCmd *exec.Cmd
 		if connInfo.ProxyKind != "" {
 			var port int
-			proxyCmd, port = utils.CreateProxy(connInfo)
+			proxyCmd, port = createProxy(connInfo)
 			connInfo.Port = port
 		}
 
 		// connect via pgcli
-		utils.ConnectDB(connInfo)
+		connectDB(connInfo)
 
 		// clean up proxy PID
 		if connInfo.ProxyKind != "" {
-			utils.KillProxyPid(proxyCmd)
+			killProxyPid(proxyCmd)
 		}
 	},
 }
