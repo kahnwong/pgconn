@@ -23,10 +23,10 @@ func connectDB(c connection) *exec.Cmd {
 
 	// print port
 	green := color.New(color.FgGreen).SprintFunc()
-	fmt.Printf("Port: %s\n", green(c.Port))
+	fmt.Printf("Port: %s\n", green(c.ProxyPort))
 
 	// connect
-	connectionString := fmt.Sprintf("postgresql://%s:%s@%s:%d/%s?sslmode=disable", c.Username, c.Password, connectHostname, c.Port, c.Dbname)
+	connectionString := fmt.Sprintf("postgresql://%s:%s@%s:%d/%s?sslmode=disable", c.Username, c.Password, connectHostname, c.ProxyPort, c.Dbname)
 	cmd := exec.Command("/bin/sh", "-c", fmt.Sprintf("pgcli \"%s\"", connectionString))
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout

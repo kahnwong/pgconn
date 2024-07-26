@@ -3,7 +3,6 @@ package connect
 import (
 	"fmt"
 	"os"
-	"os/exec"
 
 	"github.com/kahnwong/pgconn/utils"
 
@@ -45,21 +44,17 @@ var Cmd = &cobra.Command{
 
 		// main
 		connInfo := connMap[args[0]][args[1]][args[2]]
-		c := connection{connInfo}
+		c := connection{connInfo, 0, nil}
 
-		var proxyCmd *exec.Cmd
-		c.Port = c.SetProxyPort()
-
-		if c.ProxyKind != "" {
-			proxyCmd = createProxy(c)
-		}
+		c.ProxyPort = c.SetProxyPort()
+		c.ProxyCmd = c.InitProxy()
 
 		// connect via pgcli
 		connectDB(c)
 
 		// clean up proxy PID
 		if c.ProxyKind != "" {
-			killProxyPid(proxyCmd)
+			killProxyPid(c.ProxyCmd)
 		}
 	},
 }
