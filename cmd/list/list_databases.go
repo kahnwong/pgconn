@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/fatih/color"
+	"github.com/kahnwong/pgconn/color"
 	"github.com/kahnwong/pgconn/utils"
+
 	"github.com/spf13/cobra"
 	"golang.org/x/exp/slices"
 )
@@ -35,10 +36,8 @@ var databasesCmd = &cobra.Command{
 
 		isValidAccount := slices.Contains(utils.GetAccounts(), args[0])
 		if isValidAccount {
-			green := color.New(color.FgGreen).SprintFunc()
-
-			fmt.Printf("%s %s\n", green("Account:"), args[0])
-			color.Blue("Databases:")
+			fmt.Printf("%s %s\n", color.Green("Account:"), args[0])
+			fmt.Printf("%s\n", color.Blue("Databases:"))
 
 			for _, v := range utils.GetDatabases(args[0]) {
 				fmt.Printf("  - %s\n", v)
