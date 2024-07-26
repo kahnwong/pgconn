@@ -2,38 +2,13 @@ package connect
 
 import (
 	"fmt"
-	"math/rand"
 	"os"
 	"os/exec"
-	"time"
 
-	"github.com/kahnwong/pgconn/config"
 	"github.com/kahnwong/pgconn/utils"
 
 	"github.com/spf13/cobra"
 )
-
-var connMap = config.ConnMap
-
-type connection struct {
-	config.Connection
-}
-
-func (c connection) SetProxyPort() int {
-	// prevent port conflict in case
-	// simultaneously connecting to proxied db
-	if c.ProxyKind == "" {
-		return c.Port
-	} else {
-		minPort := 5432
-		maxPort := 8000
-
-		r := rand.New(rand.NewSource(time.Now().UnixNano()))
-		port := r.Intn(maxPort-minPort+1) + minPort
-
-		return port
-	}
-}
 
 func connectionInfoGet(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 	var autocompleteOptions []string
@@ -68,11 +43,10 @@ var Cmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		// get db config
+		// main
 		connInfo := connMap[args[0]][args[1]][args[2]]
 		c := connection{connInfo}
 
-		// start proxy process if necessary
 		var proxyCmd *exec.Cmd
 		c.Port = c.SetProxyPort()
 
