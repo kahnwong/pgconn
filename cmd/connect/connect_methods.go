@@ -8,6 +8,8 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/kahnwong/pgconn/utils"
+
 	"github.com/kahnwong/pgconn/color"
 
 	"github.com/kahnwong/pgconn/config"
@@ -45,7 +47,7 @@ func (c connection) InitProxy() *exec.Cmd {
 		if c.ProxyKind == "ssh" {
 			proxyCmd = fmt.Sprintf("ssh -N -L %d:%s:5432 %s", c.Port, c.Hostname, c.ProxyHost)
 		} else if c.ProxyKind == "cloud-sql-proxy" {
-			checkIfBinaryExists("cloud-sql-proxy")
+			utils.CheckIfBinaryExists("cloud-sql-proxy")
 			proxyCmd = fmt.Sprintf("cloud-sql-proxy %s --port %d --quiet", c.ProxyHost, c.ProxyPort)
 		}
 

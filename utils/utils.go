@@ -1,6 +1,10 @@
 package utils
 
 import (
+	"fmt"
+	"os"
+	"os/exec"
+
 	"github.com/kahnwong/pgconn/config"
 	"golang.org/x/exp/maps"
 )
@@ -23,4 +27,12 @@ func GetRoles(account string, database string) []string {
 	roles := maps.Keys(connMap[account][database])
 
 	return roles
+}
+
+func CheckIfBinaryExists(binaryName string) {
+	_, err := exec.LookPath(binaryName)
+	if err != nil {
+		fmt.Printf("Binary '%s' not found in the PATH\n", binaryName)
+		os.Exit(1)
+	}
 }
