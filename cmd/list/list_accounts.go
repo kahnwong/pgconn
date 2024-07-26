@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/fatih/color"
+	"github.com/kahnwong/pgconn/color"
 	"github.com/kahnwong/pgconn/utils"
 	"github.com/spf13/cobra"
 )
@@ -17,7 +17,8 @@ var accountsCmd = &cobra.Command{
 			fmt.Println("`list accounts` does not require an argument")
 			os.Exit(1)
 		}
-		color.Green("Available accounts:")
+
+		fmt.Printf("%s\n", color.Green("Available accounts:"))
 		for _, v := range utils.GetAccounts() {
 			fmt.Printf("  - %s\n", v)
 		}
