@@ -26,4 +26,5 @@ func Execute() {
 func init() {
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	rootCmd.AddCommand(list.Cmd)
+	rootCmd.AddCommand(connectCmd)
 }
