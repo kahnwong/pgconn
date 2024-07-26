@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/kahnwong/pgconn/color"
 	"github.com/kahnwong/pgconn/utils"
 	"golang.org/x/exp/slices"
 
-	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 )
 
@@ -43,12 +43,10 @@ var rolesCmd = &cobra.Command{
 		isValidDatabase := slices.Contains(utils.GetDatabases(args[0]), args[1])
 
 		if isValidAccount && isValidDatabase {
-			green := color.New(color.FgGreen).SprintFunc()
+			fmt.Printf("%s %s\n", color.Green("Account:"), args[0])
+			fmt.Printf("%s %s\n", color.Green("Database:"), args[1])
 
-			fmt.Printf("%s %s\n", green("Account:"), args[0])
-			fmt.Printf("%s %s\n", green("Database:"), args[1])
-
-			color.Blue("Roles:")
+			fmt.Printf("%s\n", color.Blue("Roles:"))
 
 			for _, v := range utils.GetRoles(args[0], args[1]) {
 				fmt.Printf("  - %s\n", v)
