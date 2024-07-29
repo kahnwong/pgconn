@@ -3,17 +3,15 @@ package connect
 import (
 	"fmt"
 	"log"
-	"math/rand"
+	"math/rand/v2"
 	"os"
 	"os/exec"
 	"syscall"
 	"time"
 
-	"github.com/kahnwong/pgconn/utils"
-
 	"github.com/kahnwong/pgconn/color"
-
 	"github.com/kahnwong/pgconn/config"
+	"github.com/kahnwong/pgconn/utils"
 )
 
 var connMap = config.ConnMap
@@ -30,8 +28,7 @@ func (c connection) SetProxyPort() int {
 	minPort := 5432
 	maxPort := 8000
 
-	r := rand.New(rand.NewSource(time.Now().UnixNano()))
-	port := r.Intn(maxPort-minPort+1) + minPort
+	port := rand.IntN(maxPort-minPort) + minPort
 
 	return port
 }
