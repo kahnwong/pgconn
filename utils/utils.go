@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"fmt"
+	"log"
 	"os"
 	"os/exec"
 
@@ -32,7 +32,7 @@ func GetRoles(account string, database string) []string {
 func CheckIfBinaryExists(binaryName string) {
 	_, err := exec.LookPath(binaryName)
 	if err != nil {
-		fmt.Printf("Binary '%s' not found in the PATH\n", binaryName)
+		log.Printf("Binary '%s' not found in the PATH\n", binaryName)
 		os.Exit(1)
 	}
 }

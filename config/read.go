@@ -40,7 +40,7 @@ func readConfig() Config {
 	_, err = os.Stat(filename)
 
 	if os.IsNotExist(err) {
-		fmt.Printf("File %s does not exist.\n", filename)
+		log.Printf("File %s does not exist.\n", filename)
 		os.Exit(1)
 	}
 
@@ -48,12 +48,14 @@ func readConfig() Config {
 
 	data, err := decrypt.File(filename, "yaml")
 	if err != nil {
-		fmt.Println(fmt.Printf("Failed to decrypt: %v", err))
+		log.Println(fmt.Printf("Failed to decrypt: %v", err))
+		os.Exit(1)
 	}
 
 	err = yaml.Unmarshal(data, &config)
 	if err != nil {
-		fmt.Printf("error: %v\n", err)
+		log.Print("Error unmarshalling config")
+		os.Exit(1)
 	}
 
 	return config

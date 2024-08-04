@@ -48,7 +48,7 @@ func (c connection) InitProxy() *exec.Cmd {
 	cmd := exec.Command("/bin/sh", "-c", proxyCmd)
 	cmd.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
 	if err := cmd.Start(); err != nil {
-		fmt.Printf("Failed to start the first process: %v\n", err)
+		log.Printf("Failed to start the first process: %v\n", err)
 		os.Exit(1)
 	}
 
@@ -81,7 +81,7 @@ func (c connection) Connect() {
 	cmd.Stderr = os.Stderr
 
 	if err := cmd.Run(); err != nil {
-		fmt.Printf("Failed to start the second process: %v\n", err)
+		log.Printf("Failed to start the second process: %v\n", err)
 		os.Exit(1)
 	}
 }
