@@ -3,7 +3,7 @@ module github.com/kahnwong/pgconn
 go 1.23.2
 
 require (
-	github.com/fatih/color v1.17.0
+	github.com/fatih/color v1.18.0
 	github.com/getsops/sops/v3 v3.9.1
 	github.com/spf13/cobra v1.8.1
 	golang.org/x/exp v0.0.0-20231006140011-7918f672742d
