@@ -6,7 +6,7 @@ require (
 	github.com/fatih/color v1.18.0
 	github.com/getsops/sops/v3 v3.9.2
 	github.com/spf13/cobra v1.8.1
-	golang.org/x/exp v0.0.0-20241210194714-1829a127f884
+	golang.org/x/exp v0.0.0-20241215155358-4a5509556b9e
 	gopkg.in/yaml.v3 v3.0.1
 )
 
