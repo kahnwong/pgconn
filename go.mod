@@ -1,13 +1,12 @@
 module github.com/kahnwong/pgconn
 
-go 1.23.2
+go 1.23.5
 
 require (
 	github.com/fatih/color v1.18.0
-	github.com/getsops/sops/v3 v3.9.3
+	github.com/kahnwong/cli-base v0.0.0-20250121060804-3c9e867df1e8
 	github.com/spf13/cobra v1.8.1
 	golang.org/x/exp v0.0.0-20250106191152-7588d65b2ba8
-	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (
@@ -63,6 +62,7 @@ require (
 	github.com/envoyproxy/protoc-gen-validate v1.1.0 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/getsops/gopgagent v0.0.0-20241224165529-7044f28e491e // indirect
+	github.com/getsops/sops/v3 v3.9.3 // indirect
 	github.com/go-jose/go-jose/v4 v4.0.4 // indirect
 	github.com/go-logr/logr v1.4.2 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
@@ -94,6 +94,7 @@ require (
 	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/planetscale/vtprotobuf v0.6.1-0.20240319094008-0393e58bdf10 // indirect
+	github.com/rs/zerolog v1.33.0 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/ryanuber/go-glob v1.0.0 // indirect
 	github.com/sirupsen/logrus v1.9.3 // indirect
@@ -123,4 +124,5 @@ require (
 	google.golang.org/grpc v1.69.2 // indirect
 	google.golang.org/protobuf v1.36.1 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
