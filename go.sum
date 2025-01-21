@@ -208,6 +208,8 @@ github.com/inconshreveable/mousetrap v1.1.0 h1:wN+x4NVGpMsO7ErUn/mUI3vEoE6Jt13X2
 github.com/inconshreveable/mousetrap v1.1.0/go.mod h1:vpF70FUmC8bwa3OWnCshd2FqLfsEA9PFc4w1p2J65bw=
 github.com/kahnwong/cli-base v0.0.0-20250121060804-3c9e867df1e8 h1:l3hxlpaOh2JHTgMo+tgoLuyJ0MbzJ9lebvwH6bD+Azk=
 github.com/kahnwong/cli-base v0.0.0-20250121060804-3c9e867df1e8/go.mod h1:sUrbxAotfk4Kr00MnguVJtTC0MUQnkohLmgQXaH2g58=
+github.com/kahnwong/cli-base v0.0.0-20250121091831-4eeecf72423f h1:MljI2d/+pFzuRqmelp9t5FYnqNx9rx/a8Cc8xA/JS/Y=
+github.com/kahnwong/cli-base v0.0.0-20250121091831-4eeecf72423f/go.mod h1:sUrbxAotfk4Kr00MnguVJtTC0MUQnkohLmgQXaH2g58=
 github.com/keybase/go-keychain v0.0.0-20231219164618-57a3676c3af6 h1:IsMZxCuZqKuao2vNdfD82fjjgPLfyHLpR41Z88viRWs=
 github.com/keybase/go-keychain v0.0.0-20231219164618-57a3676c3af6/go.mod h1:3VeWNIJaW+O5xpRQbPp0Ybqu1vJd/pm7s2F473HRrkw=
 github.com/kr/pretty v0.3.1 h1:flRD4NNwYAUpkphVc1HcthR4KEIFJ65n8Mw5qdRn3LE=
