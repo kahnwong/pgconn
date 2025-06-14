@@ -37,9 +37,10 @@ func (c connection) InitProxy() *exec.Cmd {
 	var proxyCmd string
 
 	// create cmd
-	if c.ProxyKind == "ssh" {
+	switch c.ProxyKind {
+	case "ssh":
 		proxyCmd = fmt.Sprintf("ssh -N -L %d:%s:5432 %s", c.Port, c.Hostname, c.ProxyHost)
-	} else if c.ProxyKind == "cloud-sql-proxy" {
+	case "cloud-sql-proxy":
 		utils.CheckIfBinaryExists("cloud-sql-proxy")
 		proxyCmd = fmt.Sprintf("cloud-sql-proxy %s --port %d --quiet", c.ProxyHost, c.ProxyPort)
 	}
@@ -61,9 +62,10 @@ func (c connection) Connect() {
 	// set hostname
 	var connectHostname string
 	if c.ProxyKind != "" {
-		if c.ProxyKind == "ssh" {
+		switch c.ProxyKind {
+		case "ssh":
 			connectHostname = "localhost"
-		} else if c.ProxyKind == "cloud-sql-proxy" {
+		case "cloud-sql-proxy":
 			connectHostname = "127.0.0.1"
 		}
 	} else {

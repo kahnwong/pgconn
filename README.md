@@ -23,6 +23,7 @@ pgconn:
     dbs:
       - name: sample-db
         hostname: localhost
+        port: 5432
         proxy: # this block is optional
           kind: cloud-sql-proxy
           host: $GCP_PROJECT:$GCP_REGION:$INSTANCE_IDENTIFIER

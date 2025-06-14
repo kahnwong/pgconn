@@ -23,6 +23,7 @@ type Config struct {
 		Dbs     []struct {
 			Name     string `yaml:"name"`
 			Hostname string `yaml:"hostname"`
+			Port     int    `yaml:"port"`
 			Proxy    struct {
 				Kind string `yaml:"kind"`
 				Host string `yaml:"host"`
@@ -46,6 +47,7 @@ func createConnMap(config *Config) map[string]map[string]map[string]Connection {
 		for _, db := range a.Dbs {
 			configMap[a.Account][db.Name] = map[string]Connection{}
 			hostname := db.Hostname
+			port := db.Port
 			proxyKind := db.Proxy.Kind
 			proxyHost := db.Proxy.Host
 
@@ -54,7 +56,7 @@ func createConnMap(config *Config) map[string]map[string]map[string]Connection {
 					Hostname:  hostname,
 					ProxyKind: proxyKind,
 					ProxyHost: proxyHost,
-					Port:      5432,
+					Port:      port,
 					Username:  role.Username,
 					Password:  role.Password,
 					Dbname:    role.Dbname,
