@@ -6,7 +6,7 @@ require (
 	github.com/fatih/color v1.18.0
 	github.com/kahnwong/cli-base v0.0.0-20250121091831-4eeecf72423f
 	github.com/spf13/cobra v1.9.1
-	golang.org/x/exp v0.0.0-20250711185948-6ae5c78190dc
+	golang.org/x/exp v0.0.0-20250717185816-542afb5b7346
 )
 
 require (
