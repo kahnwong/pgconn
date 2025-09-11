@@ -1,6 +1,6 @@
 package config
 
-import cliBase "github.com/kahnwong/cli-base"
+import cliBase "github.com/kahnwong/cli-base-sops"
 
 // config
 var ConnMap = createConnMap(cliBase.ReadYamlSops[Config]("~/.config/pgconn/pgconn.sops.yaml"))
