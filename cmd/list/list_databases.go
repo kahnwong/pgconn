@@ -22,7 +22,7 @@ func AccountGet(cmd *cobra.Command, args []string, toComplete string) ([]string,
 }
 
 var databasesCmd = &cobra.Command{
-	Use:               "databases",
+	Use:               "databases [account]",
 	Short:             "Get a list of databases for a given account",
 	ValidArgsFunction: AccountGet,
 	Run: func(cmd *cobra.Command, args []string) {
