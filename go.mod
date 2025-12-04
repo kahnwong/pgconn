@@ -5,7 +5,7 @@ go 1.25.0
 require (
 	github.com/fatih/color v1.18.0
 	github.com/kahnwong/cli-base-sops v0.0.0-20250928214951-d72c29a59f02
-	github.com/spf13/cobra v1.10.1
+	github.com/spf13/cobra v1.10.2
 	golang.org/x/exp v0.0.0-20251023183803-a4bb9ffd2546
 )
 
