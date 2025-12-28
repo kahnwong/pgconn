@@ -6,7 +6,7 @@ require (
 	github.com/fatih/color v1.18.0
 	github.com/kahnwong/cli-base-sops v0.0.0-20250928214951-d72c29a59f02
 	github.com/spf13/cobra v1.10.2
-	golang.org/x/exp v0.0.0-20251023183803-a4bb9ffd2546
+	golang.org/x/exp v0.0.0-20251219203646-944ab1f22d93
 )
 
 require (
@@ -117,7 +117,7 @@ require (
 	golang.org/x/crypto v0.45.0 // indirect
 	golang.org/x/net v0.47.0 // indirect
 	golang.org/x/oauth2 v0.31.0 // indirect
-	golang.org/x/sync v0.18.0 // indirect
+	golang.org/x/sync v0.19.0 // indirect
 	golang.org/x/sys v0.38.0 // indirect
 	golang.org/x/term v0.37.0 // indirect
 	golang.org/x/text v0.31.0 // indirect
