@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/kahnwong/pgconn/color"
-	"github.com/kahnwong/pgconn/utils"
+	"github.com/fatih/color"
+	"github.com/kahnwong/pgconn/internal"
 	"github.com/spf13/cobra"
 )
 
@@ -18,8 +18,8 @@ var accountsCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		fmt.Printf("%s\n", color.Green("Available accounts:"))
-		for _, v := range utils.GetAccounts() {
+		fmt.Printf("%s\n", color.HiGreenString("Available accounts:"))
+		for _, v := range internal.GetAccounts() {
 			fmt.Printf("  - %s\n", v)
 		}
 	},

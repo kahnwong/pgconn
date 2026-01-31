@@ -1,11 +1,10 @@
-package connect
+package cmd
 
 import (
 	"fmt"
 	"os"
 
-	"github.com/kahnwong/pgconn/utils"
-
+	"github.com/kahnwong/pgconn/internal"
 	"github.com/spf13/cobra"
 )
 
@@ -13,17 +12,17 @@ func connectionInfoGet(cmd *cobra.Command, args []string, toComplete string) ([]
 	var autocompleteOptions []string
 
 	if len(args) == 0 { // account
-		autocompleteOptions = utils.GetAccounts()
+		autocompleteOptions = internal.GetAccounts()
 	} else if len(args) == 1 { // database
-		autocompleteOptions = utils.GetDatabases(args[0])
+		autocompleteOptions = internal.GetDatabases(args[0])
 	} else if len(args) == 2 { // role
-		autocompleteOptions = utils.GetRoles(args[0], args[1])
+		autocompleteOptions = internal.GetRoles(args[0], args[1])
 	}
 
 	return autocompleteOptions, cobra.ShellCompDirectiveNoFileComp
 }
 
-var Cmd = &cobra.Command{
+var connectCmd = &cobra.Command{
 	Use:               "connect [account] [database] [role]",
 	Short:             "Connect to a database with specified role",
 	ValidArgsFunction: connectionInfoGet,
@@ -43,8 +42,8 @@ var Cmd = &cobra.Command{
 		}
 
 		// main
-		connInfo := connMap[args[0]][args[1]][args[2]]
-		c := connection{connInfo, 0, nil}
+		connInfo := internal.ConnMap[args[0]][args[1]][args[2]]
+		c := internal.Pgconn{Connection: connInfo}
 
 		if c.ProxyKind != "" {
 			c.ProxyPort = c.SetProxyPort()
@@ -59,5 +58,5 @@ var Cmd = &cobra.Command{
 }
 
 func init() {
-	utils.CheckIfBinaryExists("pgcli")
+	rootCmd.AddCommand(connectCmd)
 }

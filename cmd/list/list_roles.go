@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/kahnwong/pgconn/color"
-	"github.com/kahnwong/pgconn/utils"
+	"github.com/fatih/color"
+	"github.com/kahnwong/pgconn/internal"
 	"golang.org/x/exp/slices"
 
 	"github.com/spf13/cobra"
@@ -15,9 +15,9 @@ func RoleGet(cmd *cobra.Command, args []string, toComplete string) ([]string, co
 	var autocomplete []string
 
 	if len(args) == 0 {
-		autocomplete = utils.GetAccounts()
+		autocomplete = internal.GetAccounts()
 	} else if len(args) == 1 {
-		autocomplete = utils.GetDatabases(args[0])
+		autocomplete = internal.GetDatabases(args[0])
 	}
 
 	return autocomplete, cobra.ShellCompDirectiveNoFileComp
@@ -39,16 +39,16 @@ var rolesCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		isValidAccount := slices.Contains(utils.GetAccounts(), args[0])
-		isValidDatabase := slices.Contains(utils.GetDatabases(args[0]), args[1])
+		isValidAccount := slices.Contains(internal.GetAccounts(), args[0])
+		isValidDatabase := slices.Contains(internal.GetDatabases(args[0]), args[1])
 
 		if isValidAccount && isValidDatabase {
-			fmt.Printf("%s %s\n", color.Green("Account:"), args[0])
-			fmt.Printf("%s %s\n", color.Green("Database:"), args[1])
+			fmt.Printf("%s %s\n", color.HiGreenString("Account:"), args[0])
+			fmt.Printf("%s %s\n", color.HiGreenString("Database:"), args[1])
 
-			fmt.Printf("%s\n", color.Blue("Roles:"))
+			fmt.Printf("%s\n", color.BlueString("Roles:"))
 
-			for _, v := range utils.GetRoles(args[0], args[1]) {
+			for _, v := range internal.GetRoles(args[0], args[1]) {
 				fmt.Printf("  - %s\n", v)
 			}
 		} else {

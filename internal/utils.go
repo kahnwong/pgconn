@@ -1,30 +1,27 @@
-package utils
+package internal
 
 import (
 	"log"
 	"os"
 	"os/exec"
 
-	"github.com/kahnwong/pgconn/config"
 	"golang.org/x/exp/maps"
 )
 
-var connMap = config.ConnMap
-
 func GetAccounts() []string {
-	accounts := maps.Keys(connMap)
+	accounts := maps.Keys(ConnMap)
 
 	return accounts
 }
 
 func GetDatabases(account string) []string {
-	databases := maps.Keys(connMap[account])
+	databases := maps.Keys(ConnMap[account])
 
 	return databases
 }
 
 func GetRoles(account string, database string) []string {
-	roles := maps.Keys(connMap[account][database])
+	roles := maps.Keys(ConnMap[account][database])
 
 	return roles
 }

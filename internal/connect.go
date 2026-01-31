@@ -1,4 +1,4 @@
-package connect
+package internal
 
 import (
 	"fmt"
@@ -9,20 +9,16 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/kahnwong/pgconn/color"
-	"github.com/kahnwong/pgconn/config"
-	"github.com/kahnwong/pgconn/utils"
+	"github.com/fatih/color"
 )
 
-var connMap = config.ConnMap
-
-type connection struct {
-	config.Connection
+type Pgconn struct {
+	Connection
 	ProxyPort int
 	ProxyCmd  *exec.Cmd
 }
 
-func (c connection) SetProxyPort() int {
+func (c Pgconn) SetProxyPort() int {
 	// prevent port conflict in case
 	// simultaneously connecting to proxied db
 	minPort := 5432
@@ -33,7 +29,7 @@ func (c connection) SetProxyPort() int {
 	return port
 }
 
-func (c connection) InitProxy() *exec.Cmd {
+func (c Pgconn) InitProxy() *exec.Cmd {
 	var proxyCmd string
 
 	// create cmd
@@ -41,7 +37,7 @@ func (c connection) InitProxy() *exec.Cmd {
 	case "ssh":
 		proxyCmd = fmt.Sprintf("ssh -N -L %d:%s:5432 %s", c.Port, c.Hostname, c.ProxyHost)
 	case "cloud-sql-proxy":
-		utils.CheckIfBinaryExists("cloud-sql-proxy")
+		CheckIfBinaryExists("cloud-sql-proxy")
 		proxyCmd = fmt.Sprintf("cloud-sql-proxy %s --port %d --quiet", c.ProxyHost, c.ProxyPort)
 	}
 
@@ -58,7 +54,7 @@ func (c connection) InitProxy() *exec.Cmd {
 	return cmd
 }
 
-func (c connection) Connect() {
+func (c Pgconn) Connect() {
 	// set hostname
 	var connectHostname string
 	if c.ProxyKind != "" {
@@ -73,7 +69,7 @@ func (c connection) Connect() {
 	}
 
 	// print port
-	fmt.Printf("Port: %s\n", color.Green(c.ProxyPort))
+	fmt.Printf("Port: %s\n", color.HiGreenString("%d", c.ProxyPort))
 
 	// connect
 	connectionString := fmt.Sprintf("postgresql://%s:%s@%s:%d/%s?sslmode=disable", c.Username, c.Password, connectHostname, c.ProxyPort, c.Dbname)
@@ -88,7 +84,7 @@ func (c connection) Connect() {
 	}
 }
 
-func (c connection) KillProxyPid() {
+func (c Pgconn) KillProxyPid() {
 	pgid, err := syscall.Getpgid(c.ProxyCmd.Process.Pid)
 	if err == nil {
 		err = syscall.Kill(-pgid, syscall.SIGKILL)

@@ -1,9 +1,21 @@
-package config
+package internal
 
-import cliBase "github.com/kahnwong/cli-base-sops"
+import (
+	"log"
+
+	cliBase "github.com/kahnwong/cli-base-sops"
+)
 
 // config
-var ConnMap = createConnMap(cliBase.ReadYamlSops[Config]("~/.config/pgconn/pgconn.sops.yaml"))
+var ConnMap = initConnMap()
+
+func initConnMap() map[string]map[string]map[string]Connection {
+	config, err := cliBase.ReadYamlSops[Config]("~/.config/pgconn/pgconn.sops.yaml")
+	if err != nil {
+		log.Fatalf("Failed to read config: %v", err)
+	}
+	return createConnMap(config)
+}
 
 // for cli
 type Connection struct {
