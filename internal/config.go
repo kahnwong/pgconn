@@ -1,9 +1,10 @@
 package internal
 
 import (
-	"log"
+	"testing"
 
 	cliBase "github.com/kahnwong/cli-base-sops"
+	"github.com/rs/zerolog/log"
 )
 
 // config
@@ -12,8 +13,13 @@ var ConnMap = initConnMap()
 func initConnMap() map[string]map[string]map[string]Connection {
 	config, err := cliBase.ReadYamlSops[Config]("~/.config/pgconn/pgconn.sops.yaml")
 	if err != nil {
-		log.Fatalf("Failed to read config: %v", err)
+		if testing.Testing() {
+			log.Warn().Msgf("Failed to read config (test mode): %v", err)
+			return map[string]map[string]map[string]Connection{}
+		}
+		log.Fatal().Msgf("Failed to read config: %v", err)
 	}
+
 	return createConnMap(config)
 }
 
