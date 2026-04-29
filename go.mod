@@ -3,7 +3,7 @@ module github.com/kahnwong/pgconn
 go 1.26.2
 
 require (
-	github.com/fatih/color v1.18.0
+	github.com/fatih/color v1.19.0
 	github.com/kahnwong/cli-base-sops v0.0.0-20260130184704-f74848815081
 	github.com/rs/zerolog v1.35.1
 	github.com/spf13/cobra v1.10.2
