@@ -35,7 +35,7 @@ func (c Pgconn) InitProxy() *exec.Cmd {
 	// create cmd
 	switch c.ProxyKind {
 	case "ssh":
-		proxyCmd = fmt.Sprintf("ssh -N -L %d:%s:5432 %s", c.Port, c.Hostname, c.ProxyHost)
+		proxyCmd = fmt.Sprintf("ssh -N -L %d:%s:%d %s", c.ProxyPort, c.Hostname, c.Port, c.ProxyHost)
 	case "cloud-sql-proxy":
 		CheckIfBinaryExists("cloud-sql-proxy")
 		proxyCmd = fmt.Sprintf("cloud-sql-proxy %s --port %d --quiet", c.ProxyHost, c.ProxyPort)
@@ -49,7 +49,7 @@ func (c Pgconn) InitProxy() *exec.Cmd {
 		os.Exit(1)
 	}
 
-	time.Sleep(1 * time.Second) // important, so proxy has some time to start up
+	time.Sleep(5 * time.Second) // important, so proxy has some time to start up
 
 	return cmd
 }
