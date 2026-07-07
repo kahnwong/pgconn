@@ -1,6 +1,6 @@
 module github.com/kahnwong/pgconn
 
-go 1.26.4
+go 1.26.5
 
 require (
 	github.com/fatih/color v1.19.0
