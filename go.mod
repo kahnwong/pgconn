@@ -7,7 +7,7 @@ require (
 	github.com/kahnwong/cli-base-sops v0.0.0-20260710034950-2f3f4da61ace
 	github.com/rs/zerolog v1.35.1
 	github.com/spf13/cobra v1.10.2
-	golang.org/x/exp v0.0.0-20260727155853-b88d891fe743
+	golang.org/x/exp v0.0.0-20260820142414-ca536658362e
 )
 
 require (
