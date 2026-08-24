@@ -1,0 +1,3 @@
+[[IgnoredVulns]]
+id = "GO-2026-5932"
+reason = "The advisory only affects golang.org/x/crypto/openpgp packages, which are not imported; SOPS uses github.com/ProtonMail/go-crypto/openpgp."
