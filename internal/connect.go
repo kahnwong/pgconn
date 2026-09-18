@@ -49,7 +49,7 @@ func (c Pgconn) InitProxy() *exec.Cmd {
 		os.Exit(1)
 	}
 
-	time.Sleep(5 * time.Second) // important, so proxy has some time to start up
+	time.Sleep(20 * time.Second) // important, so proxy has some time to start up
 
 	return cmd
 }
